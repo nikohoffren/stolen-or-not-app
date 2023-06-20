@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
+import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 
 class RegisterDeviceScreen extends StatefulWidget {
   const RegisterDeviceScreen({super.key});
@@ -16,6 +17,9 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _serialNumberController = TextEditingController();
   final _deviceNameController = TextEditingController();
+
+  int _currentIndex = 0;
+  void _onTabTapped(int index) => setState(() => _currentIndex = index);
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +129,10 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: AppBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTabTapped: _onTabTapped,
       ),
     );
   }
