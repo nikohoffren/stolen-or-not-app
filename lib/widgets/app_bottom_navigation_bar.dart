@@ -15,13 +15,8 @@ class AppBottomNavigationBar extends StatelessWidget {
       onTap: onTabTapped,
       backgroundColor: AppColors.primaryColor,
       unselectedItemColor: AppColors.grey,
-      selectedItemColor:
-          AppColors.secondaryColor,
+      selectedItemColor: AppColors.secondaryColor,
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.info),
-          label: 'About',
-        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
           label: 'Add',
@@ -29,7 +24,11 @@ class AppBottomNavigationBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.check),
           label: 'Check',
-        )
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.info),
+          label: 'About',
+        ),
       ],
     );
   }

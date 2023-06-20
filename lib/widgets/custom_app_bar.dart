@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 
@@ -16,6 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return AppBar(
       backgroundColor: AppColors.primaryColor,
       title: Row(
@@ -23,8 +25,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ClipOval(
             child: Image.asset(
               'assets/images/stolen-gear-logo.jpeg',
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
               height: 32,
+              width: 32,
             ),
           ),
           const Text(
@@ -35,6 +38,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Center(
+              child: Text(user?.email ?? 'No email',
+                  style: const TextStyle(color: AppColors.white))),
+        ),
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: onSettingsIconPressed,
