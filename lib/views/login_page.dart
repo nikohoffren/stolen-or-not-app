@@ -20,11 +20,11 @@ class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String? _errorMessage;
 
   Future<void> _signInWithEmailPassword() async {
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -39,9 +39,13 @@ class LoginPageState extends State<LoginPage> {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        setState(() {
+          _errorMessage = 'No user found for that email.';
+        });
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        setState(() {
+          _errorMessage = 'Wrong password provided for that user.';
+        });
       }
     }
   }
@@ -66,71 +70,79 @@ class LoginPageState extends State<LoginPage> {
               style: TextStyle(color: AppColors.white, fontSize: 24),
             ),
             const SizedBox(height: 20),
+            if (_errorMessage != null)
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
             Form(
               key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: AppColors.white),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  inputDecorationTheme: const InputDecorationTheme(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.secondaryColor),
                     ),
-                    style: const TextStyle(color: AppColors.white),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.secondaryColor),
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: AppColors.white),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(color: AppColors.white),
+                        ),
+                        style: const TextStyle(color: AppColors.white),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(color: AppColors.white),
+                        ),
+                        obscureText: true,
+                        style: const TextStyle(color: AppColors.white),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                    obscureText: true,
-                    style: const TextStyle(color: AppColors.white),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _signInWithEmailPassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: AppColors.white,
+                        ),
+                        child: const Text('Sign In'),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: AppColors.white,
+                        ),
+                        child: const Text('Register'),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _signInWithEmailPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: AppColors.white,
-                    ),
-                    child: const Text('Sign In'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _register,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: AppColors.white,
-                    ),
-                    child: const Text('Register'),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

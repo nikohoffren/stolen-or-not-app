@@ -19,12 +19,12 @@ class RegisterPageState extends State<RegisterPage> {
 
   Future<void> _register() async {
     try {
-      final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
-      // Clear the error message
+      //* Clear the error message
       setState(() {
         _errorMessage = null;
       });
@@ -36,9 +36,15 @@ class RegisterPageState extends State<RegisterPage> {
           _errorMessage = 'The account already exists for that email.';
         });
       } else {
+        setState(() {
+          _errorMessage = 'An error occurred. Please try again.';
+        });
         print(e);
       }
     } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred. Please try again.';
+      });
       print(e);
     }
   }
@@ -63,60 +69,63 @@ class RegisterPageState extends State<RegisterPage> {
               ),
             Form(
               key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: AppColors.white),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  inputDecorationTheme: const InputDecorationTheme(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.secondaryColor),
                     ),
-                    style: const TextStyle(color: AppColors.white),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: AppColors.white),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.white),
-                      ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.secondaryColor),
                     ),
-                    obscureText: true,
-                    style: const TextStyle(color: AppColors.white),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _register,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: AppColors.white,
-                    ),
-                    child: const Text('Register'),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(color: AppColors.white),
+                        ),
+                        style: const TextStyle(color: AppColors.white),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(color: AppColors.white),
+                        ),
+                        obscureText: true,
+                        style: const TextStyle(color: AppColors.white),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: AppColors.white,
+                        ),
+                        child: const Text('Register'),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
