@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
+import 'package:intl/intl.dart';
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({Key? key}) : super(key: key);
@@ -44,7 +45,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     await FirebaseFirestore.instance
         .collection('devices')
         .doc(deviceId)
-        .update({'isStolen': !isStolen});
+        .update({
+      'isStolen': !isStolen,
+      'reportedAt': !isStolen ? FieldValue.serverTimestamp() : null
+    });
   }
 
   @override
@@ -83,9 +87,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                           style: const TextStyle(color: AppColors.white),
                         ),
                         if (device['isStolen'])
-                          const TextSpan(
-                            text: ' - You have reported this device stolen',
-                            style: TextStyle(color: AppColors.red, fontSize: 12),
+                          TextSpan(
+                            text:
+                                ' - You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
+                            style: const TextStyle(
+                                color: AppColors.red, fontSize: 12),
                           ),
                       ],
                     ),

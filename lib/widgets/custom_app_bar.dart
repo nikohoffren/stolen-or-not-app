@@ -31,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           const Text(
-            " Stolen Gear App",
+            "",
             style: TextStyle(color: AppColors.secondaryColor),
           ),
           Container(padding: const EdgeInsets.all(8.0), child: Text(title)),
