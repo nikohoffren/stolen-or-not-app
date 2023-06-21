@@ -2,13 +2,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
+import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
 
-class UserSettingsPage extends StatelessWidget {
-  const UserSettingsPage({super.key});
+class UserSettingsPage extends StatefulWidget {
+  const UserSettingsPage({Key? key}) : super(key: key);
 
-  void _settingsButtonPressed() {
-    print('Settings button pressed');
+  @override
+  UserSettingsPageState createState() => UserSettingsPageState();
+}
+
+class UserSettingsPageState extends State<UserSettingsPage> {
+  int _currentIndex = 0;
+
+  void _settingsButtonPressed(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   Future<List<Map<String, dynamic>>> getUserDevices() async {
@@ -29,7 +43,7 @@ class UserSettingsPage extends StatelessWidget {
       backgroundColor: AppColors.black,
       appBar: CustomAppBar(
         title: 'Settings',
-        onSettingsIconPressed: _settingsButtonPressed,
+        onSettingsIconPressed: () => _settingsButtonPressed(context),
       ),
       body: FutureBuilder(
         future: getUserDevices(),
@@ -67,6 +81,10 @@ class UserSettingsPage extends StatelessWidget {
             );
           }
         },
+      ),
+      bottomNavigationBar: AppBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTabTapped: _onTabTapped,
       ),
     );
   }
