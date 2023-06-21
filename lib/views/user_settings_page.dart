@@ -25,16 +25,26 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> getUserDevices() async {
+  Stream<List<Map<String, dynamic>>> getUserDevices() {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return [];
+    if (user == null) return const Stream.empty();
 
-    final userDevicesSnapshot = await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('devices')
         .where('userId', isEqualTo: user.uid)
-        .get();
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              final data = doc.data();
+              data['id'] = doc.id;
+              return data;
+            }).toList());
+  }
 
-    return userDevicesSnapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> reportStolenDevice(String deviceId, bool isStolen) async {
+    await FirebaseFirestore.instance
+        .collection('devices')
+        .doc(deviceId)
+        .update({'isStolen': !isStolen});
   }
 
   @override
@@ -45,8 +55,8 @@ class UserSettingsPageState extends State<UserSettingsPage> {
         title: 'Settings',
         onSettingsIconPressed: () => _settingsButtonPressed(context),
       ),
-      body: FutureBuilder(
-        future: getUserDevices(),
+      body: StreamBuilder(
+        stream: getUserDevices(),
         builder: (BuildContext context,
             AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -65,8 +75,21 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               itemBuilder: (BuildContext context, int index) {
                 Map<String, dynamic> device = snapshot.data![index];
                 return ListTile(
-                  title: Text(device['name'],
-                      style: const TextStyle(color: AppColors.white)),
+                  title: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: device['name'],
+                          style: const TextStyle(color: AppColors.white),
+                        ),
+                        if (device['isStolen'])
+                          const TextSpan(
+                            text: ' - You have reported this device stolen',
+                            style: TextStyle(color: AppColors.red, fontSize: 12),
+                          ),
+                      ],
+                    ),
+                  ),
                   subtitle: Text(device['serialNumber'],
                       style: const TextStyle(color: AppColors.grey)),
                   tileColor: AppColors.black,
@@ -76,6 +99,14 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                       borderRadius: BorderRadius.circular(10.0)),
                   leading: const Icon(Icons.devices,
                       color: AppColors.secondaryColor),
+                  trailing: TextButton(
+                    onPressed: () =>
+                        reportStolenDevice(device['id'], device['isStolen']),
+                    child: Text(
+                      device['isStolen'] ? 'Unreport' : 'Report Stolen',
+                      style: const TextStyle(color: AppColors.white),
+                    ),
+                  ),
                 );
               },
             );
