@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
+import 'package:stolen_gear_app/views/user_settings_page.dart';
 import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
 
@@ -22,8 +23,9 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
   int _currentIndex = 0;
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
   void _settingsButtonPressed() {
-    print('Settings Icon Pressed!');
-    // Navigate to settings page or open settings dialog
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const UserSettingsPage()),
+    );
   }
 
   @override
