@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
@@ -105,8 +106,10 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                                   .docs.isNotEmpty) {
                                 messenger.showSnackBar(
                                   const SnackBar(
-                                      content: Text(
-                                          'Device with this serial number already exists.')),
+                                    content: Text(
+                                        'Device with this serial number already exists.'),
+                                    backgroundColor: AppColors.secondaryColor,
+                                  ),
                                 );
                                 return;
                               }
@@ -121,14 +124,17 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                               }).then((_) {
                                 messenger.showSnackBar(
                                   const SnackBar(
-                                      content: Text(
-                                          'Device registered successfully!')),
+                                    content:
+                                        Text('Device registered successfully!'),
+                                    backgroundColor: AppColors.secondaryColor,
+                                  ),
                                 );
                               }).catchError((error) {
                                 messenger.showSnackBar(
                                   const SnackBar(
-                                      content:
-                                          Text('Failed to register device.')),
+                                    content: Text('Failed to register device.'),
+                                    backgroundColor: AppColors.secondaryColor,
+                                  ),
                                 );
                                 print(error.toString());
                               }).whenComplete(() {
@@ -143,7 +149,10 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                       foregroundColor: AppColors.white,
                     ),
                     child: _isLoading
-                        ? const CircularProgressIndicator()
+                        ? LoadingAnimationWidget.staggeredDotsWave(
+                            color: AppColors.secondaryColor,
+                            size: 50,
+                          )
                         : const Text('Register Device'),
                   ),
                 ],

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
 import 'package:stolen_gear_app/views/register_page.dart';
@@ -103,7 +104,11 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: AppColors.black,
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+              color: AppColors.secondaryColor,
+              size: 150,
+            ))
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

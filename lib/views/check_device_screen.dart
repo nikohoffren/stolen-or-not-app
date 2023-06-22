@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
@@ -88,8 +89,9 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                                 _deviceStatus = device['isStolen']
                                     ? TextSpan(
                                         text:
-                                            'WARNING! This device is reported stolen by ${device['ownerEmail']}!',
-                                        style: const TextStyle(color: Colors.red))
+                                            'This device is reported stolen by ${device['ownerEmail']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
+                                        style:
+                                            const TextStyle(color: Colors.red))
                                     : const TextSpan(
                                         text:
                                             'This device is not reported stolen.',

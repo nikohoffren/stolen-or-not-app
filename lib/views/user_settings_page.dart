@@ -2,8 +2,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
-import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
 import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:intl/intl.dart';
@@ -73,7 +73,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
         builder: (BuildContext context,
             AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+              color: AppColors.secondaryColor,
+              size: 50,
+            ));
           } else if (snapshot.hasError) {
             return Center(
                 child: Text('Error: ${snapshot.error}',
@@ -127,10 +131,6 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             );
           }
         },
-      ),
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTabTapped: _onTabTapped,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _signOut,
