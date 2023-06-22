@@ -29,10 +29,8 @@ class LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
 
-      // Copy context to a local variable to avoid using BuildContext across async gap
       final localContext = context;
 
-      // Navigate to RegisterDeviceScreen after successful sign in
       Navigator.pushReplacement(
         localContext,
         MaterialPageRoute(builder: (context) => const RegisterDeviceScreen()),
