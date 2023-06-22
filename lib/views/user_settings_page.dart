@@ -1,12 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
 import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({Key? key}) : super(key: key);
@@ -18,8 +22,10 @@ class UserSettingsPage extends StatefulWidget {
 class UserSettingsPageState extends State<UserSettingsPage> {
   int _currentIndex = 0;
   final _usernameController = TextEditingController();
+  final ValueNotifier<String?> _photoUrl = ValueNotifier<String?>(null);
+  final ImagePicker _picker = ImagePicker();
+  Future<String?>? _uploadingPhoto;
 
-  // Fetch user's info from Firebase
   User? getUser() {
     return FirebaseAuth.instance.currentUser;
   }
@@ -28,6 +34,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   void initState() {
     super.initState();
     fetchAndSetUserName();
+    _photoUrl.value = getUser()?.photoURL;
+  }
+
+  @override
+  void dispose() {
+    _photoUrl.dispose();
+    super.dispose();
   }
 
   Future<void> fetchAndSetUserName() async {
@@ -41,12 +54,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       if (docSnap.exists) {
         Map<String, dynamic>? data = docSnap.data() as Map<String, dynamic>?;
         setState(() {
-          _usernameController.text =
-              data?['username'] ?? user.displayName ?? '';
+          _usernameController.text = data?['username'] ?? user.email ?? '';
         });
       } else {
         setState(() {
-          _usernameController.text = user.displayName ?? '';
+          _usernameController.text = user.email ?? '';
         });
       }
     }
@@ -111,6 +123,78 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     );
   }
 
+  Future<String?> updateUserPhoto() async {
+    final user = getUser();
+    if (user != null) {
+      final XFile? newImage =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (newImage != null) {
+        FirebaseStorage storage = FirebaseStorage.instance;
+        Reference ref = storage
+            .ref()
+            .child('user_images/${user.uid}/${path.basename(newImage.path)}');
+
+        UploadTask uploadTask = ref.putFile(File(newImage.path));
+
+        final TaskSnapshot downloadUrl = (await uploadTask);
+        final String url = (await downloadUrl.ref.getDownloadURL());
+
+        await user.updatePhotoURL(url);
+
+        await user.reload();
+        print('Image uploaded to Firebase Storage at $url');
+
+        _photoUrl.value = url;
+
+        return url;
+      }
+    }
+    return null;
+  }
+
+  Widget userPhotoWidget(User? user) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: _photoUrl,
+      builder: (BuildContext context, String? photoUrl, Widget? child) {
+        if (photoUrl != null) {
+          return FutureBuilder(
+            future: precacheImage(NetworkImage(photoUrl), context),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Icon(Icons.error);
+              } else {
+                return SizedBox(
+                  width: 70,
+                  height: 70,
+                  child: ClipOval(
+                    child: Image.network(photoUrl, fit: BoxFit.cover),
+                  ),
+                );
+              }
+            },
+          );
+        } else {
+          return SizedBox(
+            width: 70,
+            height: 70,
+            child: ClipOval(
+              child: Material(
+                color: Colors.grey[200],
+                child: const Icon(
+                  Icons.person,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = getUser();
@@ -126,18 +210,39 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             padding: const EdgeInsets.only(top: 16.0),
             child: Row(
               children: [
-                if (user?.photoURL != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ClipOval(
-                      child: Image.network(
-                        user!.photoURL!,
-                        fit: BoxFit.cover,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ClipOval(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _uploadingPhoto = updateUserPhoto();
+                        });
+                      },
+                      child: SizedBox(
                         height: 70,
                         width: 70,
+                        child: Stack(
+                          children: [
+                            userPhotoWidget(user),
+                            FutureBuilder<String?>(
+                              future: _uploadingPhoto,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String?> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                ),
                 Expanded(
                   child: TextFormField(
                     controller: _usernameController,
