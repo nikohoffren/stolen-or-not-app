@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -31,9 +32,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: 32,
             ),
           ),
-          const Text(
-            "",
-            style: TextStyle(color: AppColors.secondaryColor),
+          Text(
+            " Stolen Gear",
+            style: GoogleFonts.abel(
+              color: AppColors.secondaryColor,
+            ),
           ),
           Container(padding: const EdgeInsets.all(8.0), child: Text(title)),
         ],
