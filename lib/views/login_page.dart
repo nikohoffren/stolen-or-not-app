@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
-import 'package:stolen_gear_app/views/register_device_screen.dart';
+import 'package:stolen_gear_app/views/main_screen.dart';
 import 'package:stolen_gear_app/views/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class LoginPageState extends State<LoginPage> {
 
         Navigator.pushReplacement(
           localContext,
-          MaterialPageRoute(builder: (context) => const RegisterDeviceScreen()),
+          MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -53,7 +53,6 @@ class LoginPageState extends State<LoginPage> {
           });
         }
       } finally {
-        // New block
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -80,7 +79,7 @@ class LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const RegisterDeviceScreen(),
+          builder: (context) => const MainScreen(),
         ),
       );
     }
@@ -122,7 +121,7 @@ class LoginPageState extends State<LoginPage> {
                     "Stolen Gear",
                     style: GoogleFonts.abel(
                       color: AppColors.secondaryColor,
-                      fontSize: 32, // Adjust the size as per your requirement.
+                      fontSize: 32,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -182,9 +181,8 @@ class LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: _isLoading
-                                  ? null
-                                  : _signInWithEmailPassword, // disabled when loading
+                              onPressed:
+                                  _isLoading ? null : _signInWithEmailPassword,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primaryColor,
                                 foregroundColor: AppColors.white,
@@ -196,7 +194,6 @@ class LoginPageState extends State<LoginPage> {
                               onTap: _isLoading
                                   ? null
                                   : () async {
-                                      // disabled when loading
                                       final UserCredential user =
                                           await _signInWithGoogle();
                                       if (user.user != null) {
@@ -204,7 +201,7 @@ class LoginPageState extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const RegisterDeviceScreen(),
+                                                const MainScreen(),
                                           ),
                                         );
                                       }
@@ -216,9 +213,7 @@ class LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: _isLoading
-                                  ? null
-                                  : _register, // disabled when loading
+                              onPressed: _isLoading ? null : _register,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primaryColor,
                                 foregroundColor: AppColors.white,

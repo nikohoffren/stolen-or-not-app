@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
-import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
-import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
 
 class RegisterDeviceScreen extends StatefulWidget {
   const RegisterDeviceScreen({super.key});
@@ -34,10 +32,6 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      appBar: CustomAppBar(
-        title: '',
-        onSettingsIconPressed: _settingsButtonPressed,
-      ),
       body: Form(
         key: _formKey,
         child: Padding(
@@ -95,6 +89,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                               final messenger = ScaffoldMessenger.of(context);
                               final name = _deviceNameController.text;
                               final serialNumber = _serialNumberController.text;
+                              final ownerEmail = _auth.currentUser?.email;
                               setState(() {
                                 _isLoading = true;
                               });
@@ -121,6 +116,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                                 'userId': _auth.currentUser?.uid,
                                 'name': name,
                                 'serialNumber': serialNumber,
+                                'ownerEmail': ownerEmail,
                                 'isStolen': false,
                               }).then((_) {
                                 messenger.showSnackBar(
@@ -155,10 +151,6 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTabTapped: _onTabTapped,
       ),
     );
   }
