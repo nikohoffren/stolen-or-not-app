@@ -16,36 +16,37 @@ class RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _errorMessage;
-
   Future<void> _register() async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
-      //* Clear the error message
-      setState(() {
-        _errorMessage = null;
-      });
-
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
+        //* Clear the error message
         setState(() {
-          _errorMessage = 'The account already exists for that email.';
+          _errorMessage = null;
         });
-      } else {
+
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'email-already-in-use') {
+          setState(() {
+            _errorMessage = 'The account already exists for that email.';
+          });
+        } else {
+          setState(() {
+            _errorMessage = 'An error occurred. Please try again.';
+          });
+          print(e);
+        }
+      } catch (e) {
         setState(() {
           _errorMessage = 'An error occurred. Please try again.';
         });
         print(e);
       }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'An error occurred. Please try again.';
-      });
-      print(e);
     }
   }
 
@@ -110,6 +111,8 @@ class RegisterPageState extends State<RegisterPage> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your password';
+                          } else if (value.length < 6) {
+                            return 'Password should be at least 6 characters';
                           }
                           return null;
                         },
