@@ -21,6 +21,8 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
   final _deviceNameController = TextEditingController();
 
   int _currentIndex = 0;
+  bool _isLoading = false;
+
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
   void _settingsButtonPressed() {
     Navigator.of(context).push(
@@ -86,54 +88,67 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final messenger = ScaffoldMessenger.of(context);
-                        final name = _deviceNameController.text;
-                        final serialNumber = _serialNumberController.text;
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              final messenger = ScaffoldMessenger.of(context);
+                              final name = _deviceNameController.text;
+                              final serialNumber = _serialNumberController.text;
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              //* Checking for duplicate serial numbers
+                              final duplicateSerialNumberSnapshot = await _db
+                                  .collection('devices')
+                                  .where('serialNumber',
+                                      isEqualTo: serialNumber)
+                                  .get();
 
-                        //* Checking for duplicate serial numbers
-                        final duplicateSerialNumberSnapshot = await _db
-                            .collection('devices')
-                            .where('serialNumber', isEqualTo: serialNumber)
-                            .get();
+                              //* If a duplicate serial number exists, show a SnackBar
+                              if (duplicateSerialNumberSnapshot
+                                  .docs.isNotEmpty) {
+                                messenger.showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Device with this serial number already exists.')),
+                                );
+                                return;
+                              }
 
-                        //* If a duplicate serial number exists, show a SnackBar
-                        if (duplicateSerialNumberSnapshot.docs.isNotEmpty) {
-                          messenger.showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Device with this serial number already exists.')),
-                          );
-                          return;
-                        }
-
-                        //* If not, continue with device registration
-                        _db.collection('devices').add({
-                          'userId': _auth.currentUser?.uid,
-                          'name': name,
-                          'serialNumber': serialNumber,
-                          'isStolen': false,
-                        }).then((_) {
-                          messenger.showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text('Device registered successfully!')),
-                          );
-                        }).catchError((error) {
-                          messenger.showSnackBar(
-                            const SnackBar(
-                                content: Text('Failed to register device.')),
-                          );
-                          print(error.toString());
-                        });
-                      }
-                    },
+                              //* If not, continue with device registration
+                              _db.collection('devices').add({
+                                'userId': _auth.currentUser?.uid,
+                                'name': name,
+                                'serialNumber': serialNumber,
+                                'isStolen': false,
+                              }).then((_) {
+                                messenger.showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Device registered successfully!')),
+                                );
+                              }).catchError((error) {
+                                messenger.showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Failed to register device.')),
+                                );
+                                print(error.toString());
+                              }).whenComplete(() {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              });
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                       foregroundColor: AppColors.white,
                     ),
-                    child: const Text('Register Device'),
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('Register Device'),
                   ),
                 ],
               ),

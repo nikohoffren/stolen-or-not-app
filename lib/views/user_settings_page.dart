@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/widgets/app_bottom_navigation_bar.dart';
 import 'package:stolen_gear_app/widgets/custom_app_bar.dart';
+import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:intl/intl.dart';
 
 class UserSettingsPage extends StatefulWidget {
@@ -49,6 +51,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       'isStolen': !isStolen,
       'reportedAt': !isStolen ? FieldValue.serverTimestamp() : null
     });
+  }
+
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
   }
 
   @override
@@ -122,6 +131,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _currentIndex,
         onTabTapped: _onTabTapped,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _signOut,
+        backgroundColor: AppColors.primaryColor,
+        child: const Icon(Icons.logout),
       ),
     );
   }
