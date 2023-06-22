@@ -117,8 +117,8 @@ class LoginPageState extends State<LoginPage> {
                     child: Image.asset(
                       'assets/images/stolen-gear-logo.jpeg',
                       fit: BoxFit.cover,
-                      height: 70,
-                      width: 70,
+                      height: 120,
+                      width: 120,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -126,7 +126,7 @@ class LoginPageState extends State<LoginPage> {
                     "Stolen Gear",
                     style: GoogleFonts.abel(
                       color: AppColors.secondaryColor,
-                      fontSize: 32,
+                      fontSize: 42,
                     ),
                   ),
                   const SizedBox(height: 20),
