@@ -61,6 +61,14 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
     super.dispose();
   }
 
+  String getSerialNumberLabel() {
+    if (_selectedCategory == 'Phones & Tablets') {
+      return 'IMEI';
+    } else {
+      return 'Serial Number';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,14 +148,14 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: _serialNumberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Serial Number or IMEI',
-                      labelStyle: TextStyle(color: AppColors.white),
+                    decoration: InputDecoration(
+                      labelText: getSerialNumberLabel(),
+                      labelStyle: const TextStyle(color: AppColors.white),
                     ),
                     style: const TextStyle(color: AppColors.white),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter the serial number or IMEI of the device';
+                        return 'Please enter the ${getSerialNumberLabel().toLowerCase()} of the device';
                       }
                       return null;
                     },
