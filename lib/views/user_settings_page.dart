@@ -201,7 +201,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: CustomAppBar(
-        title: 'Settings',
+        title: ' Settings',
         onSettingsIconPressed: () => _settingsButtonPressed(context),
       ),
       body: Column(
