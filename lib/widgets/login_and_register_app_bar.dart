@@ -33,6 +33,7 @@ class LoginAndRegisterAppBar extends StatelessWidget
             "  StolenOrNot?",
             style: GoogleFonts.abel(
               color: AppColors.secondaryColor,
+              fontSize: 25.0
             ),
           ),
           Container(padding: const EdgeInsets.all(8.0), child: Text(title)),

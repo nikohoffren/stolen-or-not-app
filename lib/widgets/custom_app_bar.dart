@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -35,8 +36,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           Text(
             "  StolenOrNot?",
             style: GoogleFonts.abel(
-              color: AppColors.secondaryColor,
-            ),
+                color: AppColors.secondaryColor, fontSize: 25.0),
           ),
           Container(padding: const EdgeInsets.all(8.0), child: Text(title)),
         ],
@@ -45,8 +45,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Center(
-              child: Text(user?.email ?? 'No email',
-                  style: const TextStyle(color: AppColors.white))),
+            child: FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user?.uid)
+                  .get(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('Error');
+                } else {
+                  final userData =
+                      snapshot.data?.data() as Map<String, dynamic>;
+                  final username = userData['username'] ?? user?.email;
+                  return Text(
+                    username ?? 'No email',
+                    style: const TextStyle(color: AppColors.white),
+                  );
+                }
+              },
+            ),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.settings),

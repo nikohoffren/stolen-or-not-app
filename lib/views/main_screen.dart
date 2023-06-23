@@ -39,23 +39,33 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void _settingsButtonPressed() {
-    Navigator.of(context).push(
+    Navigator.of(context)
+        .push(
       MaterialPageRoute(builder: (context) => const UserSettingsPage()),
-    );
+    )
+        .then((value) {
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.black,
-      appBar: CustomAppBar(
-        title: '',
-        onSettingsIconPressed: _settingsButtonPressed,
-      ),
-      body: _children[_currentIndex],
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTabTapped: _onTabTapped,
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {});
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.black,
+        appBar: CustomAppBar(
+          title: '',
+          onSettingsIconPressed: _settingsButtonPressed,
+        ),
+        body: _children[_currentIndex],
+        bottomNavigationBar: AppBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTabTapped: _onTabTapped,
+        ),
       ),
     );
   }
