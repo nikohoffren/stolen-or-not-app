@@ -5,7 +5,7 @@ import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
 class CheckDeviceScreen extends StatefulWidget {
-  const CheckDeviceScreen({super.key});
+  const CheckDeviceScreen({Key? key}) : super(key: key);
 
   @override
   CheckDeviceScreenState createState() => CheckDeviceScreenState();
@@ -24,6 +24,62 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   void _settingsButtonPressed() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const UserSettingsPage()),
+    );
+  }
+
+  Widget _buildFAQModal(String question, String answer) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          question,
+          style: const TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          answer,
+          style: const TextStyle(color: AppColors.white),
+        ),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
+  Widget _buildFAQQuestion(String question, String answer) {
+    return ListTile(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            backgroundColor: AppColors.black,
+            content: SingleChildScrollView(
+              child: _buildFAQModal(question, answer),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Close',
+                  style: TextStyle(color: AppColors.grey),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      title: Text(
+        question,
+        style: const TextStyle(color: AppColors.secondaryColor),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        color: AppColors.secondaryColor,
+      ),
     );
   }
 
@@ -65,56 +121,59 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _isLoading = true;
-                                _deviceStatus = const TextSpan(text: '');
-                              });
-                              final serialNumber = _serialNumberController.text;
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  _isLoading = true;
+                                  _deviceStatus = const TextSpan(text: '');
+                                });
+                                final serialNumber = _serialNumberController.text;
 
-                              //* Checking for stolen devices
-                              final deviceSnapshot = await _db
-                                  .collection('devices')
-                                  .where('serialNumber',
-                                      isEqualTo: serialNumber)
-                                  .get();
+                                //* Checking for stolen devices
+                                final deviceSnapshot = await _db
+                                    .collection('devices')
+                                    .where('serialNumber',
+                                        isEqualTo: serialNumber)
+                                    .get();
 
-                              //* If a device exists, check if it is stolen
-                              if (deviceSnapshot.docs.isNotEmpty) {
-                                var device = deviceSnapshot.docs.first.data();
-                                _deviceStatus = device['isStolen']
-                                    ? TextSpan(
-                                        text:
-                                            'This device is reported stolen by ${device['ownerEmail']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
-                                        style:
-                                            const TextStyle(color: Colors.red))
-                                    : const TextSpan(
-                                        text:
-                                            'This device is not reported stolen.',
-                                        style: TextStyle(color: Colors.green));
-                              } else {
-                                _deviceStatus = const TextSpan(
-                                    text:
-                                        'Device with this serial number or IMEI does not exist.',
-                                    style: TextStyle(color: Colors.orange));
+                                //* If a device exists, check if it is stolen
+                                if (deviceSnapshot.docs.isNotEmpty) {
+                                  var device = deviceSnapshot.docs.first.data();
+                                  _deviceStatus = device['isStolen']
+                                      ? TextSpan(
+                                          text:
+                                              'This device is reported stolen by ${device['ownerEmail']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
+                                          style:
+                                              const TextStyle(color: Colors.red))
+                                      : const TextSpan(
+                                          text:
+                                              'This device is not reported stolen.',
+                                          style: TextStyle(color: Colors.green));
+                                } else {
+                                  _deviceStatus = const TextSpan(
+                                      text:
+                                          'Device with this serial number or IMEI does not exist.',
+                                      style: TextStyle(color: Colors.orange));
+                                }
+
+                                setState(() {
+                                  _isLoading = false;
+                                });
                               }
-
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: AppColors.white,
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.secondaryColor,
+                        foregroundColor: AppColors.white,
+                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Check Device'),
                     ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('Check Device'),
                   ),
                   if (_deviceStatus.text?.isNotEmpty ?? false)
                     Padding(
@@ -124,6 +183,11 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
+                  const SizedBox(height: 20),
+                  _buildFAQQuestion(
+                    'What should I do if I see that the device is stolen?',
+                    'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any relevant information or evidence you have. It is important to cooperate with authorities to help recover stolen devices and prevent further illegal activities.',
+                  ),
                 ],
               ),
             ),

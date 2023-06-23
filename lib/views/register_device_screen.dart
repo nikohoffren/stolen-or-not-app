@@ -70,60 +70,58 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
     }
   }
 
-  void _showAnswerModal(String question, String answer) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              question,
-              style: const TextStyle(
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              answer,
-              style: const TextStyle(color: AppColors.white),
-            ),
-            const SizedBox(height: 12),
-          ],
+  Widget _buildFAQModal(String question, String answer) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          question,
+          style: const TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          answer,
+          style: const TextStyle(color: AppColors.white),
+        ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 
-  Widget _buildFAQQuestion(String question) {
-    return TextButton(
-      onPressed: () {
-        String answer = '';
-        if (question == 'What is IMEI and where to find it?') {
-          answer =
-              'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.';
-        } else if (question == 'What is Serial number?') {
-          answer =
-              'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.';
-        } else if (question ==
-            'What should I enter in the Additional Info field?') {
-          answer =
-              'The Additional Info field is optional and can be used to provide any additional details or information about the device. You can use this field to include specific features, accessories, or any other relevant information that you want to associate with the device.';
-        } else if (question ==
-            'What should I do if my device gets lost or stolen?') {
-          answer =
-              'If your registered device gets lost or stolen you can click the settings-icon on top-left of the screen, which will open the Settings menu. In there you can see all the devices you have registered. Next to the device name you can click the "Report stolen" button to report the device lost or stolen. Now, if someone checks the IMEI or serial number of the device, they can see immidiately that it is stolen and how to proceed from there';
-        }
-        _showAnswerModal(question, answer);
+  Widget _buildFAQQuestion(String question, String answer) {
+    return ListTile(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            backgroundColor: AppColors.black,
+            content: SingleChildScrollView(
+              child: _buildFAQModal(question, answer),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Close',
+                  style: TextStyle(color: AppColors.grey),
+                ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Text(
+      title: Text(
         question,
         style: const TextStyle(color: AppColors.secondaryColor),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        color: AppColors.secondaryColor,
       ),
     );
   }
@@ -221,8 +219,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
-                    controller:
-                        _additionalInfoController, // Additional Info field
+                    controller: _additionalInfoController,
                     decoration: const InputDecoration(
                       labelText: 'Additional Info',
                       labelStyle: TextStyle(color: AppColors.white),
@@ -238,8 +235,8 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                               final messenger = ScaffoldMessenger.of(context);
                               final name = _deviceNameController.text;
                               final serialNumber = _serialNumberController.text;
-                              final additionalInfo = _additionalInfoController
-                                  .text; // Get additional info text
+                              final additionalInfo =
+                                  _additionalInfoController.text;
                               final ownerEmail = _auth.currentUser?.email;
                               setState(() {
                                 _isLoading = true;
@@ -273,8 +270,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                                 'userId': _auth.currentUser?.uid,
                                 'name': name,
                                 'serialNumber': serialNumber,
-                                'additionalInfo':
-                                    additionalInfo, // Save additional info in Firestore
+                                'additionalInfo': additionalInfo,
                                 'ownerEmail': ownerEmail,
                                 'category': _selectedCategory,
                                 'isStolen': false,
@@ -310,48 +306,22 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                         ? const CircularProgressIndicator()
                         : const Text('Register Device'),
                   ),
-                  const SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          backgroundColor: AppColors.black,
-                          title: const Text(
-                            'Frequently Asked Questions',
-                            style: TextStyle(color: AppColors.white),
-                          ),
-                          content: SingleChildScrollView(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildFAQQuestion(
-                                  'What is IMEI and where to find it?'),
-                              _buildFAQQuestion('What is Serial number?'),
-                              _buildFAQQuestion(
-                                  'What should I enter in the Additional Info field?'),
-                              _buildFAQQuestion(
-                                  'What should I do if my device gets lost or stolen?'),
-                            ],
-                          )),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text(
-                                'Close',
-                                style: TextStyle(color: AppColors.primaryColor),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Frequently Asked Questions',
-                      style: TextStyle(color: AppColors.secondaryColor),
-                    ),
+                  const SizedBox(height: 20),
+                  _buildFAQQuestion(
+                    'What is IMEI and where to find it?',
+                    'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
+                  ),
+                  _buildFAQQuestion(
+                    'What is Serial number?',
+                    'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
+                  ),
+                  _buildFAQQuestion(
+                    'What should I enter in the Additional Info field?',
+                    'The Additional Info field is optional and can be used to provide any additional details or information about the device. You can use this field to include specific features, accessories, or any other relevant information that you want to associate with the device.',
+                  ),
+                  _buildFAQQuestion(
+                    'What should I do if my device gets lost or stolen?',
+                    'If your registered device gets lost or stolen you can click the settings-icon on top-left of the screen, which will open the Settings menu. In there you can see all the devices you have registered. Next to the device name you can click the "Report stolen" button to report the device lost or stolen. Now, if someone checks the IMEI or serial number of the device, they can see immidiately that it is stolen and how to proceed from there.',
                   ),
                 ],
               ),
