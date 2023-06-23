@@ -1,4 +1,4 @@
-# Stolen Gear App
+# StolenOrNot? (Flutter app)
 
 ## Description
 
