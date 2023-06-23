@@ -7,7 +7,7 @@ This Flutter application is built to help people keep track of their valuable de
 ## Key Features
 
 - **User Authentication:** Users can create accounts and log in using Firebase Authentication. This ensures the privacy and security of their registered devices.
-- **Device Registration:** Users can register their devices by entering a name and a unique serial number. The application stores these devices in a Firestore collection. Users cannot register a device if its serial number has already been registered.
+- **Device Registration:** Users can register their devices by entering a name and a unique serial number or IMEI depending on device. The application stores these devices in a Firestore collection. Users cannot register a device if its serial number or IMEI has already been registered.
 - **Stolen Devices:** If a device is stolen, users can mark it as such in the Firestore database. This can be useful for tracking purposes, and for alerting the user's friends or the community.
 
 ## Getting Started
