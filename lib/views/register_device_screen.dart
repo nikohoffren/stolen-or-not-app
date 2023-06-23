@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
@@ -71,24 +70,61 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
     }
   }
 
-  Widget _buildFAQModal(String question, String answer) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          question,
-          style: const TextStyle(
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
+  void _showAnswerModal(String question, String answer) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              question,
+              style: const TextStyle(
+                color: AppColors.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              answer,
+              style: const TextStyle(color: AppColors.white),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
-        const SizedBox(height: 4),
-        Text(
-          answer,
-          style: const TextStyle(color: AppColors.white),
-        ),
-        const SizedBox(height: 12),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildFAQQuestion(String question) {
+    return TextButton(
+      onPressed: () {
+        String answer = '';
+        if (question == 'What is IMEI and where to find it?') {
+          answer =
+              'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.';
+        } else if (question == 'What is Serial number?') {
+          answer =
+              'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.';
+        } else if (question ==
+            'What should I enter in the Additional Info field?') {
+          answer =
+              'The Additional Info field is optional and can be used to provide any additional details or information about the device. You can use this field to include specific features, accessories, or any other relevant information that you want to associate with the device.';
+        } else if (question ==
+            'What should I do if my device gets lost or stolen?') {
+          answer =
+              'If your registered device gets lost or stolen you can click the settings-icon on top-left of the screen, which will open the Settings menu. In there you can see all the devices you have registered. Next to the device name you can click the "Report stolen" button to report the device lost or stolen. Now, if someone checks the IMEI or serial number of the device, they can see immidiately that it is stolen and how to proceed from there';
+        }
+        _showAnswerModal(question, answer);
+      },
+      child: Text(
+        question,
+        style: const TextStyle(color: AppColors.secondaryColor),
+      ),
     );
   }
 
@@ -286,24 +322,18 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
                             style: TextStyle(color: AppColors.white),
                           ),
                           content: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildFAQModal(
-                                  'What is IMEI?',
-                                  'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
-                                ),
-                                _buildFAQModal(
-                                  'How to find the serial number?',
-                                  'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
-                                ),
-                                _buildFAQModal(
-                                  'What should I enter in the Additional Info field?',
-                                  'The Additional Info field is optional and can be used to provide any additional details or information about the device. You can use this field to include specific features, accessories, or any other relevant information that you want to associate with the device.',
-                                ),
-                              ],
-                            ),
-                          ),
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildFAQQuestion(
+                                  'What is IMEI and where to find it?'),
+                              _buildFAQQuestion('What is Serial number?'),
+                              _buildFAQQuestion(
+                                  'What should I enter in the Additional Info field?'),
+                              _buildFAQQuestion(
+                                  'What should I do if my device gets lost or stolen?'),
+                            ],
+                          )),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -329,7 +359,6 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
           ),
         ),
       ),
-
     );
   }
 }
