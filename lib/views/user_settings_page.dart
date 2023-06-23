@@ -413,7 +413,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                                             context, device['id']),
                                     icon: const Icon(
                                       Icons.delete,
-                                      color: AppColors.white,
+                                      color: AppColors.secondaryColor,
                                     ),
                                   ),
                                 ],

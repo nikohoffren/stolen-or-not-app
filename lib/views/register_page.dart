@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
+import 'package:stolen_gear_app/widgets/login_and_register_app_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -67,6 +68,7 @@ class RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
+      appBar: const LoginAndRegisterAppBar(title: ' Register'),
       body: _isLoading
           ? Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
@@ -142,7 +144,7 @@ class RegisterPageState extends State<RegisterPage> {
                             ElevatedButton(
                               onPressed: _register,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryColor,
+                                backgroundColor: AppColors.secondaryColor,
                                 foregroundColor: AppColors.white,
                               ),
                               child: const Text('Register'),

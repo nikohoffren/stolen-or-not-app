@@ -7,6 +7,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
 import 'package:stolen_gear_app/views/register_page.dart';
+import 'package:stolen_gear_app/widgets/login_and_register_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -103,6 +104,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
+      appBar: const LoginAndRegisterAppBar(title: ' Login'),
       body: _isLoading
           ? Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
