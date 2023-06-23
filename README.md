@@ -1,5 +1,6 @@
 # StolenOrNot? (Flutter app)
 
+![StolenOrNot?](https://github.com/nikohoffren/stolen-or-not-app/blob/main/assets/images/stolen-gear-logo.jpeg?raw=true)
 ## Description
 
 This Flutter application is built to help people keep track of their valuable devices and protect them from theft. It allows users to register their devices, such as computers, cars, musical instruments, and more by entering a name and a unique serial number for each device. If a device gets stolen, users can mark it as such in the app. That way, if someone is selling the device in question, people will be able to check whether the device is already registered to someone in the app.
