@@ -189,7 +189,7 @@ class LoginPageState extends State<LoginPage> {
                               onPressed:
                                   _isLoading ? null : _signInWithEmailPassword,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryColor,
+                                backgroundColor: AppColors.secondaryColor,
                                 foregroundColor: AppColors.white,
                               ),
                               child: const Text('Sign In with Email'),
@@ -220,7 +220,7 @@ class LoginPageState extends State<LoginPage> {
                             ElevatedButton(
                               onPressed: _isLoading ? null : _register,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryColor,
+                                backgroundColor: AppColors.secondaryColor,
                                 foregroundColor: AppColors.white,
                               ),
                               child: const Text('Register with Email'),

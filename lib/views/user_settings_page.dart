@@ -106,13 +106,15 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             }).toList());
   }
 
-  Future<void> reportStolenDevice(String deviceId, bool isStolen) async {
+  Future<void> reportStolenDevice(
+      String deviceId, bool isStolen, String username) async {
     await FirebaseFirestore.instance
         .collection('devices')
         .doc(deviceId)
         .update({
       'isStolen': !isStolen,
-      'reportedAt': !isStolen ? FieldValue.serverTimestamp() : null
+      'reportedAt': !isStolen ? FieldValue.serverTimestamp() : null,
+      'ownerUsername': username,
     });
   }
 
@@ -340,7 +342,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                                   color: AppColors.secondaryColor),
                               trailing: TextButton(
                                 onPressed: () => reportStolenDevice(
-                                    device['id'], device['isStolen']),
+                                  device['id'],
+                                  device['isStolen'],
+                                  _usernameController.text,
+                                ),
                                 child: Text(
                                   device['isStolen']
                                       ? 'Unreport'

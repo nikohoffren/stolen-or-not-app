@@ -132,7 +132,8 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                                   _isLoading = true;
                                   _deviceStatus = const TextSpan(text: '');
                                 });
-                                final serialNumber = _serialNumberController.text;
+                                final serialNumber =
+                                    _serialNumberController.text;
 
                                 //* Checking for stolen devices
                                 final deviceSnapshot = await _db
@@ -147,13 +148,14 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                                   _deviceStatus = device['isStolen']
                                       ? TextSpan(
                                           text:
-                                              'This device is reported stolen by ${device['ownerEmail']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
-                                          style:
-                                              const TextStyle(color: Colors.red))
+                                              'This device is reported stolen by ${device['ownerUsername']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
+                                          style: const TextStyle(
+                                              color: Colors.red))
                                       : const TextSpan(
                                           text:
                                               'This device is not reported stolen.',
-                                          style: TextStyle(color: Colors.green));
+                                          style:
+                                              TextStyle(color: Colors.green));
                                 } else {
                                   _deviceStatus = const TextSpan(
                                       text:
@@ -187,6 +189,14 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                   _buildFAQQuestion(
                     'What should I do if I see that the device is stolen?',
                     'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any relevant information or evidence you have. It is important to cooperate with authorities to help recover stolen devices and prevent further illegal activities.',
+                  ),
+                  _buildFAQQuestion(
+                    'What is IMEI and where to find it?',
+                    'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
+                  ),
+                  _buildFAQQuestion(
+                    'What is Serial number?',
+                    'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
                   ),
                 ],
               ),
