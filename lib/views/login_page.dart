@@ -123,7 +123,7 @@ class LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "Stolen Gear",
+                    "StolenOrNot?",
                     style: GoogleFonts.abel(
                       color: AppColors.secondaryColor,
                       fontSize: 42,

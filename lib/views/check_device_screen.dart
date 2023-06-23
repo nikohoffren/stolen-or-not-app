@@ -53,13 +53,13 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                   TextFormField(
                     controller: _serialNumberController,
                     decoration: const InputDecoration(
-                      labelText: 'Serial Number',
+                      labelText: 'Serial Number or IMEI',
                       labelStyle: TextStyle(color: AppColors.white),
                     ),
                     style: const TextStyle(color: AppColors.white),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter the serial number of the device';
+                        return 'Please enter the serial number or IMEI of the device';
                       }
                       return null;
                     },
@@ -99,7 +99,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                               } else {
                                 _deviceStatus = const TextSpan(
                                     text:
-                                        'Device with this serial number does not exist.',
+                                        'Device with this serial number or IMEI does not exist.',
                                     style: TextStyle(color: Colors.orange));
                               }
 

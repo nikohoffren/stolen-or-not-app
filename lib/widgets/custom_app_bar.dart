@@ -33,7 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           Text(
-            "  Stolen Gear",
+            "  StolenOrNot?",
             style: GoogleFonts.abel(
               color: AppColors.secondaryColor,
             ),

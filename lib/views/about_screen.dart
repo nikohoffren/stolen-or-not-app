@@ -40,7 +40,7 @@ class AboutScreenState extends State<AboutScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                "Stolen Gear",
+                "StolenOrNot?",
                 style: GoogleFonts.abel(
                   color: AppColors.secondaryColor,
                   fontSize: 32,

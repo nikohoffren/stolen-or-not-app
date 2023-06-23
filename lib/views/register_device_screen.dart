@@ -70,13 +70,13 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                   TextFormField(
                     controller: _serialNumberController,
                     decoration: const InputDecoration(
-                      labelText: 'Serial Number',
+                      labelText: 'Serial Number or IMEI',
                       labelStyle: TextStyle(color: AppColors.white),
                     ),
                     style: const TextStyle(color: AppColors.white),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter the serial number of the device';
+                        return 'Please enter the serial number or IMEI of the device';
                       }
                       return null;
                     },
@@ -107,7 +107,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                                 messenger.showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Device with this serial number already exists.'),
+                                        'Device with this serial number or IMEI already exists.'),
                                     backgroundColor: AppColors.secondaryColor,
                                   ),
                                 );
