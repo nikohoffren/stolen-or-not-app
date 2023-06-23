@@ -81,6 +81,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     }
   }
 
+  Future<void> deleteDevice(String deviceId) async {
+    await FirebaseFirestore.instance
+        .collection('devices')
+        .doc(deviceId)
+        .delete();
+  }
+
   void _settingsButtonPressed(BuildContext context) {
     Navigator.pop(context);
   }
@@ -122,6 +129,38 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
+
+  Future<void> showDeleteConfirmationDialog(
+      BuildContext context, String deviceId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.primaryColor,
+          titleTextStyle: const TextStyle(color: AppColors.white),
+          contentTextStyle: const TextStyle(color: AppColors.white),
+          title: const Text('Confirmation'),
+          content: const Text('Are you sure you want to delete this device?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                deleteDevice(deviceId);
+              },
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -318,41 +357,66 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                                     TextSpan(
                                       text: device['name'],
                                       style: const TextStyle(
-                                          color: AppColors.white),
+                                        color: AppColors.white,
+                                      ),
                                     ),
                                     if (device['isStolen'])
                                       TextSpan(
                                         text:
                                             ' - You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
                                         style: const TextStyle(
-                                            color: AppColors.red, fontSize: 12),
+                                          color: AppColors.red,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                   ],
                                 ),
                               ),
-                              subtitle: Text(device['serialNumber'],
-                                  style:
-                                      const TextStyle(color: AppColors.grey)),
+                              subtitle: Text(
+                                device['serialNumber'],
+                                style: const TextStyle(
+                                  color: AppColors.grey,
+                                ),
+                              ),
                               tileColor: AppColors.black,
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              leading: const Icon(Icons.devices,
-                                  color: AppColors.secondaryColor),
-                              trailing: TextButton(
-                                onPressed: () => reportStolenDevice(
-                                  device['id'],
-                                  device['isStolen'],
-                                  _usernameController.text,
-                                ),
-                                child: Text(
-                                  device['isStolen']
-                                      ? 'Unreport'
-                                      : 'Report Stolen',
-                                  style:
-                                      const TextStyle(color: AppColors.white),
-                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              leading: const Icon(
+                                Icons.devices,
+                                color: AppColors.secondaryColor,
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => reportStolenDevice(
+                                      device['id'],
+                                      device['isStolen'],
+                                      _usernameController.text,
+                                    ),
+                                    child: Text(
+                                      device['isStolen']
+                                          ? 'Unreport'
+                                          : 'Report Stolen',
+                                      style: const TextStyle(
+                                          color: AppColors.white),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        showDeleteConfirmationDialog(
+                                            context, device['id']),
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           },
