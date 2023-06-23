@@ -6,27 +6,59 @@ import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
 class RegisterDeviceScreen extends StatefulWidget {
-  const RegisterDeviceScreen({super.key});
+  const RegisterDeviceScreen({Key? key}) : super(key: key);
 
   @override
   RegisterDeviceScreenState createState() => RegisterDeviceScreenState();
 }
 
-class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
+class RegisterDeviceScreenState extends State<RegisterDeviceScreen>
+    with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   final _serialNumberController = TextEditingController();
   final _deviceNameController = TextEditingController();
-
+  String? _selectedCategory;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
   int _currentIndex = 0;
   bool _isLoading = false;
+  bool _showDropdownMenu = false;
+
+  final List<String> _deviceCategories = [
+    'Phones & Tablets',
+    'Musical Instruments',
+    'Gaming Consoles',
+    'Home Electronics',
+    'Other',
+  ];
 
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
   void _settingsButtonPressed() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const UserSettingsPage()),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+    _selectedCategory = _deviceCategories[0];
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,6 +97,45 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                       }
                       return null;
                     },
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.secondaryColor),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: DropdownButtonFormField<String>(
+                      dropdownColor: AppColors.black,
+                      value: _selectedCategory,
+                      decoration: const InputDecoration(
+                        labelText: 'Category',
+                        labelStyle: TextStyle(color: AppColors.white),
+                        border: InputBorder.none,
+                      ),
+                      style: const TextStyle(color: AppColors.white),
+                      items: _deviceCategories.map((category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(
+                            category,
+                            style: const TextStyle(color: AppColors.white),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value!;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a category';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -120,6 +191,7 @@ class RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                                 'name': name,
                                 'serialNumber': serialNumber,
                                 'ownerEmail': ownerEmail,
+                                'category': _selectedCategory,
                                 'isStolen': false,
                               }).then((_) {
                                 messenger.showSnackBar(
