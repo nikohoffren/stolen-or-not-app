@@ -143,6 +143,13 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
     }
   }
 
+  void _sendStolenDeviceMessage() {
+    // Implement the logic to send a message to the user who reported the device as stolen
+    // You can use Firebase Cloud Messaging or any other messaging service to send the message
+    // You may need to store the user's notification token or contact information when they report the device as stolen
+    // Here, you can show a confirmation dialog or snackbar to indicate that the message has been sent
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -211,6 +218,40 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: _additionalInfoCard,
+                    ),
+                  if (_deviceStatus.contains('stolen'))
+                    Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Send a Message to the User who reported the device as stolen:',
+                          style: TextStyle(color: AppColors.secondaryColor),
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Your Message',
+                            labelStyle: TextStyle(color: AppColors.white),
+                          ),
+                          style: const TextStyle(color: AppColors.white),
+                          maxLines: 3,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your message';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: _sendStolenDeviceMessage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.secondaryColor,
+                            foregroundColor: AppColors.white,
+                          ),
+                          child: const Text('Send Message'),
+                        ),
+                      ],
                     ),
                   const SizedBox(height: 20),
                   _buildFAQQuestion(
