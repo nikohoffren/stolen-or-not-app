@@ -19,6 +19,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   int _currentIndex = 0;
   bool _isLoading = false;
   String _deviceStatus = '';
+  Widget? _additionalInfoCard;
 
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
   void _settingsButtonPressed() {
@@ -83,6 +84,65 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
     );
   }
 
+  Future<void> _checkDeviceStatus() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+        _deviceStatus = '';
+        _additionalInfoCard = null;
+      });
+
+      final serialNumber = _serialNumberController.text;
+
+      //* Checking for stolen devices
+      final deviceSnapshot = await _db
+          .collection('devices')
+          .where('serialNumber', isEqualTo: serialNumber)
+          .get();
+
+      //* If a device exists, check if it is stolen
+      if (deviceSnapshot.docs.isNotEmpty) {
+        var device = deviceSnapshot.docs.first.data();
+        var additionalInfo = device['additionalInfo'];
+        var additionalInfoText = device['isStolen'] && additionalInfo.isNotEmpty
+            ? additionalInfo
+            : '';
+
+        setState(() {
+          _deviceStatus = device['isStolen']
+              ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}'
+              : 'This device is not reported stolen.';
+          if (additionalInfoText.isNotEmpty) {
+            _additionalInfoCard = Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: Card(
+                color: AppColors.black,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(1.0, 1.0, 1.0, 1.0),
+                  child: Text(
+                    'Additional Info added by owner: $additionalInfoText',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        });
+      } else {
+        setState(() {
+          _deviceStatus =
+              'Device with this serial number or IMEI does not exist.';
+        });
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,50 +184,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () async {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  _isLoading = true;
-                                  _deviceStatus = '';
-                                });
-                                final serialNumber =
-                                    _serialNumberController.text;
-
-                                //* Checking for stolen devices
-                                final deviceSnapshot = await _db
-                                    .collection('devices')
-                                    .where('serialNumber',
-                                        isEqualTo: serialNumber)
-                                    .get();
-
-                                //* If a device exists, check if it is stolen
-                                if (deviceSnapshot.docs.isNotEmpty) {
-                                  var device = deviceSnapshot.docs.first.data();
-                                  var additionalInfo = device['additionalInfo'];
-                                  var additionalInfoText = device['isStolen'] &&
-                                          additionalInfo.isNotEmpty
-                                      ? '. Additional Info added by user: $additionalInfo'
-                                      : '';
-
-                                  setState(() {
-                                    _deviceStatus = device['isStolen']
-                                        ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}$additionalInfoText'
-                                        : 'This device is not reported stolen.';
-                                  });
-                                } else {
-                                  setState(() {
-                                    _deviceStatus =
-                                        'Device with this serial number or IMEI does not exist.';
-                                  });
-                                }
-
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              }
-                            },
+                      onPressed: _isLoading ? null : _checkDeviceStatus,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.secondaryColor,
                         foregroundColor: AppColors.white,
@@ -189,6 +206,11 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                    ),
+                  if (_additionalInfoCard != null)
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: _additionalInfoCard,
                     ),
                   const SizedBox(height: 20),
                   _buildFAQQuestion(
