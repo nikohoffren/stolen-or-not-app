@@ -10,7 +10,7 @@ import 'package:stolen_gear_app/views/register_page.dart';
 import 'package:stolen_gear_app/widgets/login_and_register_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -96,7 +96,8 @@ class LoginPageState extends State<LoginPage> {
   void _register() {
     final localContext = context;
 
-    Navigator.push(localContext,
+    Navigator.push(
+        localContext,
         MaterialPageRoute(builder: (context) => const RegisterPage()));
   }
 
@@ -108,9 +109,10 @@ class LoginPageState extends State<LoginPage> {
       body: _isLoading
           ? Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
-              color: AppColors.secondaryColor,
-              size: 150,
-            ))
+                color: AppColors.secondaryColor,
+                size: 150,
+              ),
+            )
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -238,4 +240,11 @@ class LoginPageState extends State<LoginPage> {
             ),
     );
   }
+}
+
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Stream to listen for changes in the user's authentication state
+  Stream<bool> get isLoggedIn => _auth.authStateChanges().map((User? user) => user != null);
 }

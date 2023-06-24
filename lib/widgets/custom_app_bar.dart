@@ -54,16 +54,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
+                } else if (snapshot.hasError || snapshot.data == null) {
                   return const Text('Error');
                 } else {
                   final userData =
-                      snapshot.data?.data() as Map<String, dynamic>;
-                  final username = userData['username'] ?? user?.email;
-                  return Text(
-                    username ?? 'No email',
-                    style: const TextStyle(color: AppColors.white),
-                  );
+                      snapshot.data!.data() as Map<String, dynamic>?;
+
+                  if (userData != null) {
+                    final username = userData['username'] ?? user?.email;
+                    return Text(
+                      username ?? 'No email',
+                      style: const TextStyle(color: AppColors.white),
+                    );
+                  } else {
+                    return const Text('');
+                  }
                 }
               },
             ),

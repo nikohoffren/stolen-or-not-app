@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stolen_gear_app/views/login_page.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:stolen_gear_app/views/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,44 +19,29 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: const SplashScreen(),
+      home: const AuthenticationWrapper(),
     );
   }
 }
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  SplashScreenState createState() => SplashScreenState();
-}
-
-class SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(
-      const Duration(seconds: 3),
-      () {
-        Navigator.of(context).pushReplacement(
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: const LoginPage(),
-          ),
-        );
-      },
-    );
-  }
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.black,
-        child: Center(
-          child: Image.asset('assets/images/stolen-gear-logo.jpeg'),
-        ),
-      ),
+    final authService = AuthService();
+
+    return StreamBuilder<bool>(
+      stream: authService.isLoggedIn,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData && snapshot.data!) {
+          return const MainScreen();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }
