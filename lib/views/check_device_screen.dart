@@ -18,7 +18,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
 
   int _currentIndex = 0;
   bool _isLoading = false;
-  TextSpan _deviceStatus = const TextSpan(text: '');
+  String _deviceStatus = '';
 
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
   void _settingsButtonPressed() {
@@ -130,7 +130,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   _isLoading = true;
-                                  _deviceStatus = const TextSpan(text: '');
+                                  _deviceStatus = '';
                                 });
                                 final serialNumber =
                                     _serialNumberController.text;
@@ -145,22 +145,20 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                                 //* If a device exists, check if it is stolen
                                 if (deviceSnapshot.docs.isNotEmpty) {
                                   var device = deviceSnapshot.docs.first.data();
-                                  _deviceStatus = device['isStolen']
-                                      ? TextSpan(
-                                          text:
-                                              'This device is reported stolen by ${device['ownerUsername']} at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!',
-                                          style: const TextStyle(
-                                              color: Colors.red))
-                                      : const TextSpan(
-                                          text:
-                                              'This device is not reported stolen.',
-                                          style:
-                                              TextStyle(color: Colors.green));
+                                  var additionalInfoText = device['isStolen']
+                                      ? ' Additional Info added by user: ${device['additionalInfo']}'
+                                      : '';
+
+                                  setState(() {
+                                    _deviceStatus = device['isStolen']
+                                        ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!$additionalInfoText'
+                                        : 'This device is not reported stolen.';
+                                  });
                                 } else {
-                                  _deviceStatus = const TextSpan(
-                                      text:
-                                          'Device with this serial number or IMEI does not exist.',
-                                      style: TextStyle(color: Colors.orange));
+                                  setState(() {
+                                    _deviceStatus =
+                                        'Device with this serial number or IMEI does not exist.';
+                                  });
                                 }
 
                                 setState(() {
@@ -177,11 +175,16 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                           : const Text('Check Device'),
                     ),
                   ),
-                  if (_deviceStatus.text?.isNotEmpty ?? false)
+                  if (_deviceStatus.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: RichText(
-                        text: _deviceStatus,
+                      child: Text(
+                        _deviceStatus,
+                        style: TextStyle(
+                          color: _deviceStatus.contains('stolen')
+                              ? Colors.red
+                              : Colors.green,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
