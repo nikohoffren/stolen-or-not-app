@@ -145,13 +145,15 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                                 //* If a device exists, check if it is stolen
                                 if (deviceSnapshot.docs.isNotEmpty) {
                                   var device = deviceSnapshot.docs.first.data();
-                                  var additionalInfoText = device['isStolen']
-                                      ? ' Additional Info added by user: ${device['additionalInfo']}'
+                                  var additionalInfo = device['additionalInfo'];
+                                  var additionalInfoText = device['isStolen'] &&
+                                          additionalInfo.isNotEmpty
+                                      ? '. Additional Info added by user: $additionalInfo'
                                       : '';
 
                                   setState(() {
                                     _deviceStatus = device['isStolen']
-                                        ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}!$additionalInfoText'
+                                        ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}$additionalInfoText'
                                         : 'This device is not reported stolen.';
                                   });
                                 } else {
