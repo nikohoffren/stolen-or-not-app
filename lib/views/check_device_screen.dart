@@ -1,8 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
+
 import 'package:intl/intl.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class CheckDeviceScreen extends StatefulWidget {
   const CheckDeviceScreen({Key? key}) : super(key: key);
@@ -15,6 +21,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   final _serialNumberController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   int _currentIndex = 0;
   bool _isLoading = false;
@@ -22,6 +29,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   Widget? _additionalInfoCard;
 
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
+
   void _settingsButtonPressed() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const UserSettingsPage()),
@@ -143,11 +151,79 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
     }
   }
 
-  void _sendStolenDeviceMessage() {
-    // Implement the logic to send a message to the user who reported the device as stolen
-    // You can use Firebase Cloud Messaging or any other messaging service to send the message
-    // You may need to store the user's notification token or contact information when they report the device as stolen
-    // Here, you can show a confirmation dialog or snackbar to indicate that the message has been sent
+  void _sendStolenDeviceMessage() async {
+    // Get the message entered by the user who found the stolen device
+    final String message = _messageController.text;
+
+    // Configure the SMTP server details for sending the email
+    final smtpServer = gmail('stolenornot.app@gmail.com',
+        FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'));
+
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // Get the email of the user who reported the device stolen
+      final String? stolenDeviceUserEmail = user.email;
+
+      // Create the email message
+      final messageToSend = Message()
+        ..from = const Address('stolenornot.app@gmail.com', 'StolenOrNot?')
+        ..recipients.add(stolenDeviceUserEmail)
+        ..subject = 'Stolen Device Report'
+        ..text = message;
+
+      try {
+        // Print the message to be sent
+        print('Message to send:');
+        print(messageToSend.toString());
+
+        // Send the email
+        final sendReport = await send(messageToSend, smtpServer);
+
+        // Print the result of sending the email
+        print('Send report:');
+        print(sendReport);
+        print(message);
+
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Email Sent'),
+            content: const Text(
+                'Your message has been sent to the user who reported the device as stolen.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } catch (e) {
+        // Print the error message
+        print('Error sending email:');
+        print(e);
+
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Error'),
+            content: const Text('An error occurred while sending the email.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
   @override

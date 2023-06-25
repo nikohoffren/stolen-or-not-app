@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_config/flutter_config.dart';
+
 import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FlutterConfig.loadEnvVariables();
+
   runApp(const MyApp());
 }
 
