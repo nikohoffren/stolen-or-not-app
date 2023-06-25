@@ -1,0 +1,1 @@
+-keep class com.nikohoffren.stolen_gear_app.BuildConfig { *; }

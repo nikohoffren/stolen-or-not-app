@@ -1,0 +1,12 @@
+ext.envConfigFiles = [
+    debug: ".env.debug",
+    release: ".env.release",
+    // Add more build variants and their corresponding .env files if needed
+]
+
+android.applicationVariants.all { variant ->
+    def envFile = envConfigFiles[variant.name]
+    if (envFile) {
+        variant.resValue "string", "flutter_dotenv", "\"${envFile}\""
+    }
+}
