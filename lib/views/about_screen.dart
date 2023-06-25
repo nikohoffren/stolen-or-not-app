@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
@@ -13,6 +14,20 @@ class AboutScreen extends StatefulWidget {
 
 class AboutScreenState extends State<AboutScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  void _getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+    });
+  }
 
   void _settingsButtonPressed() {
     Navigator.of(context).push(
@@ -47,9 +62,9 @@ class AboutScreenState extends State<AboutScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                'Version: 1.0.0',
-                style: TextStyle(
+              Text(
+                'Version: $_version',
+                style: const TextStyle(
                   color: AppColors.white,
                 ),
               ),
