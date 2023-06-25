@@ -4,6 +4,7 @@ import 'package:flutter_config/flutter_config.dart';
 
 import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
+import 'package:stolen_gear_app/views/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,10 +24,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: const AuthenticationWrapper(),
+      home: const SplashScreen(), // Use SplashScreen as the initial route
     );
   }
 }
+
 
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
@@ -39,10 +41,13 @@ class AuthenticationWrapper extends StatelessWidget {
       stream: authService.isLoggedIn,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          // Show the SplashScreen while checking the authentication status
+          return const SplashScreen();
         } else if (snapshot.hasData && snapshot.data!) {
+          // User is logged in, navigate to MainScreen
           return const MainScreen();
         } else {
+          // User is not logged in, navigate to LoginPage
           return const LoginPage();
         }
       },
