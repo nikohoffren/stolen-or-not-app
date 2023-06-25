@@ -6,7 +6,7 @@ import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+  const AboutScreen({Key? key}) : super(key: key);
 
   @override
   AboutScreenState createState() => AboutScreenState();
@@ -32,6 +32,89 @@ class AboutScreenState extends State<AboutScreen> {
   void _settingsButtonPressed() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const UserSettingsPage()),
+    );
+  }
+
+  void _showAcknowledgments() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          color: AppColors.primaryColor,
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Acknowledgments',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: [
+                    ListTile(
+                      title: const Text('Library 1', style: TextStyle(color: Colors.white)),
+                      subtitle: const Text('Description of Library 1', style: TextStyle(color: Colors.white)),
+                      onTap: () {
+                        // Handle onTap for Library 1
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Library 2', style: TextStyle(color: Colors.white)),
+                      subtitle: const Text('Description of Library 2', style: TextStyle(color: Colors.white)),
+                      onTap: () {
+                        // Handle onTap for Library 2
+                      },
+                    ),
+                    // Add more ListTile widgets for each acknowledgment
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPrivacyPolicy() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          color: AppColors.primaryColor,
+          child: Column(
+            children: const [
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'By using this app, you agree to the Privacy Policy and consent to the collection and use of your information as described below:\n\nThis app may collect and store the email address associated with your account for authentication and communication purposes. The email address will not be shared with third parties without your consent.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -81,6 +164,15 @@ class AboutScreenState extends State<AboutScreen> {
                 style: TextStyle(
                   color: AppColors.white,
                 ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _showAcknowledgments,
+                child: const Text('Acknowledgments'),
+              ),
+              ElevatedButton(
+                onPressed: _showPrivacyPolicy,
+                child: const Text('Privacy Policy'),
               ),
             ],
           ),
