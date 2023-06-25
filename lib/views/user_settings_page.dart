@@ -43,6 +43,24 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     super.dispose();
   }
 
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: SizedBox(
+            width: 300,
+            height: 300,
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> fetchAndSetUserName() async {
     final user = getUser();
     if (user != null) {
@@ -350,75 +368,102 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             Map<String, dynamic> device = snapshot.data![index];
-                            return ListTile(
-                              title: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: device['name'],
-                                      style: const TextStyle(
-                                        color: AppColors.white,
-                                      ),
+                            return GestureDetector(
+                                onTap: () => _showImageDialog(
+                                    context, device['imageUrl']),
+                                child: ListTile(
+                                  leading: device['imageUrl'] != null
+                                      ? SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              device['imageUrl'],
+                                              fit: BoxFit.cover,
+                                              loadingBuilder:
+                                                  (BuildContext context,
+                                                      Widget child,
+                                                      ImageChunkEvent?
+                                                          loadingProgress) {
+                                                if (loadingProgress == null) {
+                                                  return child;
+                                                }
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      : const Icon(
+                                          Icons.devices,
+                                          color: AppColors.secondaryColor,
+                                        ),
+                                  title: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: device['name'],
+                                          style: const TextStyle(
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                        if (device['isStolen'])
+                                          TextSpan(
+                                            text:
+                                                '  -  You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
+                                            style: const TextStyle(
+                                              color: AppColors.red,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                      ],
                                     ),
-                                    if (device['isStolen'])
-                                      TextSpan(
-                                        text:
-                                            ' - You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
-                                        style: const TextStyle(
-                                          color: AppColors.red,
-                                          fontSize: 12,
+                                  ),
+                                  subtitle: Text(
+                                    device['serialNumber'],
+                                    style: const TextStyle(
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                  tileColor: AppColors.black,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 8.0,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () => reportStolenDevice(
+                                          device['id'],
+                                          device['isStolen'],
+                                          _usernameController.text,
+                                        ),
+                                        child: Text(
+                                          device['isStolen']
+                                              ? 'Unreport'
+                                              : 'Report Stolen',
+                                          style: const TextStyle(
+                                              color: AppColors.white),
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ),
-                              subtitle: Text(
-                                device['serialNumber'],
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                ),
-                              ),
-                              tileColor: AppColors.black,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              leading: const Icon(
-                                Icons.devices,
-                                color: AppColors.secondaryColor,
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextButton(
-                                    onPressed: () => reportStolenDevice(
-                                      device['id'],
-                                      device['isStolen'],
-                                      _usernameController.text,
-                                    ),
-                                    child: Text(
-                                      device['isStolen']
-                                          ? 'Unreport'
-                                          : 'Report Stolen',
-                                      style: const TextStyle(
-                                          color: AppColors.white),
-                                    ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            showDeleteConfirmationDialog(
+                                                context, device['id']),
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: AppColors.secondaryColor,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  IconButton(
-                                    onPressed: () =>
-                                        showDeleteConfirmationDialog(
-                                            context, device['id']),
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: AppColors.secondaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+                                ));
                           },
                         ),
                       ),
