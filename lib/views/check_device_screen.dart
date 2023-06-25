@@ -163,70 +163,85 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
 
       final messageText = _messageController.text;
 
-      //* Create the email message
-      final messageToSend = Message()
-        ..from = const Address('stolenornot.app@gmail.com', 'StolenOrNot?')
-        ..recipients.add(stolenDeviceUserEmail)
-        ..subject = 'Stolen Device Report'
-        ..html = '''
-      <p>Someone searched the IMEI or Serial Number of your device and has maybe found it.</p>
-      <p>Message written by the user who found your device:</p><br />
-      <p>$messageText</p>
-    ''';
+      //* Retrieve the owner's email from Firestore
+      final serialNumber = _serialNumberController.text;
+      final deviceSnapshot = await _db
+          .collection('devices')
+          .where('serialNumber', isEqualTo: serialNumber)
+          .get();
 
-      try {
-        print('Message to send:');
-        print(messageToSend.toString());
+      if (deviceSnapshot.docs.isNotEmpty) {
+        final device = deviceSnapshot.docs.first.data();
+        final String? ownerEmail = device['ownerEmail'];
 
-        setState(() {
-          _isLoading = true;
-        });
+        if (ownerEmail != null) {
+          //* Create the email message
+          final messageToSend = Message()
+            ..from = const Address('stolenornot.app@gmail.com', 'StolenOrNot?')
+            ..recipients.add(ownerEmail)
+            ..subject = 'Stolen Device Report'
+            ..html = '''
+          <p>Someone searched the IMEI or Serial Number of your device and has maybe found it.</p>
+          <p>Message written by the user who found your device:</p><br />
+          <p>$messageText</p>
+        ''';
 
-        final sendReport = await send(messageToSend, smtpServer);
+          try {
+            print('Message to send:');
+            print(messageToSend.toString());
 
-        print('Send report:');
-        print(sendReport);
-        print(_messageController.text);
+            setState(() {
+              _isLoading = true;
+            });
 
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Email Sent'),
-            content: const Text(
-                'Your message has been sent to the user who reported the device as stolen.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
+            final sendReport = await send(messageToSend, smtpServer);
+
+            print('Send report:');
+            print(sendReport);
+            print(_messageController.text);
+
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('Email Sent'),
+                content: const Text(
+                    'Your message has been sent to the user who reported the device as stolen.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      } catch (e) {
-        print('Error sending email:');
-        print(e);
+            );
+          } catch (e) {
+            print('Error sending email:');
+            print(e);
 
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Error'),
-            content: const Text('An error occurred while sending the email.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('Error'),
+                content:
+                    const Text('An error occurred while sending the email.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+            );
+          } finally {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }
       }
     }
   }
