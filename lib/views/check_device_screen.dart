@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-
 import 'package:intl/intl.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
@@ -152,39 +151,42 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   }
 
   void _sendStolenDeviceMessage() async {
-    // Get the message entered by the user who found the stolen device
-    final String message = _messageController.text;
+    final smtpServer = gmail(
+      'stolenornot.app@gmail.com',
+      FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'),
+    );
 
-    // Configure the SMTP server details for sending the email
-    final smtpServer = gmail('stolenornot.app@gmail.com',
-        FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'));
-
-    // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      // Get the email of the user who reported the device stolen
       final String? stolenDeviceUserEmail = user.email;
 
-      // Create the email message
+      final messageText = _messageController.text;
+
+      //* Create the email message
       final messageToSend = Message()
         ..from = const Address('stolenornot.app@gmail.com', 'StolenOrNot?')
         ..recipients.add(stolenDeviceUserEmail)
         ..subject = 'Stolen Device Report'
-        ..text = message;
+        ..html = '''
+      <p>Someone searched the IMEI or Serial Number of your device and has maybe found it.</p>
+      <p>Message written by the user who found your device:</p><br />
+      <p>$messageText</p>
+    ''';
 
       try {
-        // Print the message to be sent
         print('Message to send:');
         print(messageToSend.toString());
 
-        // Send the email
+        setState(() {
+          _isLoading = true;
+        });
+
         final sendReport = await send(messageToSend, smtpServer);
 
-        // Print the result of sending the email
         print('Send report:');
         print(sendReport);
-        print(message);
+        print(_messageController.text);
 
         showDialog(
           context: context,
@@ -203,7 +205,6 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
           ),
         );
       } catch (e) {
-        // Print the error message
         print('Error sending email:');
         print(e);
 
@@ -222,6 +223,10 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
             ],
           ),
         );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -305,6 +310,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          controller: _messageController,
                           decoration: const InputDecoration(
                             labelText: 'Your Message',
                             labelStyle: TextStyle(color: AppColors.white),
