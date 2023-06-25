@@ -26,6 +26,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
   bool _isLoading = false;
   String _deviceStatus = '';
   Widget? _additionalInfoCard;
+  String? _imageUrl;
 
   void _onTabTapped(int index) => setState(() => _currentIndex = index);
 
@@ -97,6 +98,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
         _isLoading = true;
         _deviceStatus = '';
         _additionalInfoCard = null;
+        _imageUrl = null;
       });
 
       final serialNumber = _serialNumberController.text;
@@ -136,6 +138,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
               ),
             );
           }
+          _imageUrl = device['imageUrl'];
         });
       } else {
         setState(() {
@@ -265,97 +268,107 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                 ),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _serialNumberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Serial Number or IMEI',
-                      labelStyle: TextStyle(color: AppColors.white),
-                    ),
-                    style: const TextStyle(color: AppColors.white),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter the serial number or IMEI of the device';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _checkDeviceStatus,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.secondaryColor,
-                        foregroundColor: AppColors.white,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _serialNumberController,
+                      decoration: const InputDecoration(
+                        labelText: 'Serial Number or IMEI',
+                        labelStyle: TextStyle(color: AppColors.white),
                       ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Check Device'),
+                      style: const TextStyle(color: AppColors.white),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter the serial number or IMEI of the device';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  if (_deviceStatus.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        _deviceStatus,
-                        style: TextStyle(
-                          color: _deviceStatus.contains('stolen')
-                              ? Colors.red
-                              : Colors.green,
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _checkDeviceStatus,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          foregroundColor: AppColors.white,
                         ),
-                        textAlign: TextAlign.center,
+                        child: _isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text('Check Device'),
                       ),
                     ),
-                  if (_additionalInfoCard != null)
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: _additionalInfoCard,
-                    ),
-                  if (_deviceStatus.contains('stolen'))
-                    Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Send a Message to the User who reported the device as stolen:',
-                          style: TextStyle(color: AppColors.secondaryColor),
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: _messageController,
-                          decoration: const InputDecoration(
-                            labelText: 'Your Message',
-                            labelStyle: TextStyle(color: AppColors.white),
+                    if (_deviceStatus.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          _deviceStatus,
+                          style: TextStyle(
+                            color: _deviceStatus.contains('stolen')
+                                ? Colors.red
+                                : Colors.green,
                           ),
-                          style: const TextStyle(color: AppColors.white),
-                          maxLines: 3,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your message';
-                            }
-                            return null;
-                          },
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: _sendStolenDeviceMessage,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondaryColor,
-                            foregroundColor: AppColors.white,
+                      ),
+                    if (_additionalInfoCard != null)
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: _additionalInfoCard,
+                      ),
+                    if (_imageUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Image.network(_imageUrl!),
+                      ),
+                    if (_deviceStatus.contains('stolen'))
+                      Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Send a Message to the User who reported the device as stolen:',
+                            style: TextStyle(color: AppColors.secondaryColor),
                           ),
-                          child: const Text('Send Message'),
-                        ),
-                      ],
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            controller: _messageController,
+                            decoration: const InputDecoration(
+                              labelText: 'Your Message',
+                              labelStyle: TextStyle(color: AppColors.white),
+                            ),
+                            style: const TextStyle(color: AppColors.white),
+                            maxLines: 3,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your message';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: _sendStolenDeviceMessage,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.secondaryColor,
+                              foregroundColor: AppColors.white,
+                            ),
+                            child: const Text('Send Message'),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 20),
+                    _buildFAQQuestion(
+                      'What should I do if I see that the device is stolen?',
+                      'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any information you have about the device and the seller.',
                     ),
-                  const SizedBox(height: 20),
-                  _buildFAQQuestion(
-                    'What should I do if I see that the device is stolen?',
-                    'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any relevant information or evidence you have. It is important to cooperate with authorities to help recover stolen devices and prevent further illegal activities.',
-                  ),
-                  _buildFAQQuestion(
+                    _buildFAQQuestion(
+                      'How can I protect my device from being stolen?',
+                      'To protect your device from being stolen, follow these tips:\n\n1. Enable a passcode or biometric authentication on your device.\n2. Keep your device out of sight and secure it when not in use.\n3. Enable remote tracking and remote wipe capabilities on your device.\n4. Register your device with a device registry service like StolenOrNot to increase the chances of recovery if it gets stolen.\n5. Be cautious when purchasing used devices and ensure they are not reported stolen before making a purchase.',
+                    ),
+                    _buildFAQQuestion(
                     'What is IMEI and where to find it?',
                     'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
                   ),
@@ -363,7 +376,8 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                     'What is Serial number?',
                     'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
                   ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
