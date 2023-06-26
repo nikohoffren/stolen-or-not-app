@@ -245,7 +245,7 @@ void _sendBugReport(String reportMessage) async {
               ),
               const SizedBox(height: 10),
               const Text(
-                'Contact: niko.hoffren@gmail.com',
+                'Contact: stolenornot.app@gmail.com',
                 style: TextStyle(
                   color: AppColors.white,
                 ),
