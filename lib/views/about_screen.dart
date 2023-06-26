@@ -8,6 +8,7 @@ import 'package:mailer/smtp_server/gmail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
+import 'package:stolen_gear_app/widgets/privacy_policy.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({Key? key}) : super(key: key);
@@ -94,32 +95,28 @@ class AboutScreenState extends State<AboutScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          color: AppColors.primaryColor,
-          child: Column(
-            children: const [
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Privacy Policy',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+        return SingleChildScrollView(
+          child: Container(
+            color: AppColors.primaryColor,
+            child: Column(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'By using this app, you agree to the Privacy Policy and consent to the collection and use of your information as described below:\n\nThis app may collect and store the email address associated with your account for authentication and communication purposes. The email address will not be shared with third parties without your consent.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: PrivacyPolicy(),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -130,12 +127,12 @@ class AboutScreenState extends State<AboutScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final _messageController = TextEditingController();
+        final messageController = TextEditingController();
 
         return AlertDialog(
           title: const Text('Report a Bug'),
           content: TextField(
-            controller: _messageController,
+            controller: messageController,
             maxLines: 4,
             decoration: const InputDecoration(
               labelText: 'Message',
@@ -144,7 +141,7 @@ class AboutScreenState extends State<AboutScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                _sendBugReport(_messageController.text);
+                _sendBugReport(messageController.text);
                 Navigator.of(context).pop();
               },
               child: const Text('Submit'),
@@ -155,53 +152,54 @@ class AboutScreenState extends State<AboutScreen> {
     );
   }
 
-void _sendBugReport(String reportMessage) async {
-  final smtpServer = gmail('stolenornot.app@gmail.com', FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'));
+  void _sendBugReport(String reportMessage) async {
+    final smtpServer = gmail('stolenornot.app@gmail.com',
+        FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'));
 
-  final message = Message()
-    ..from = const Address('stolenornot.app@gmail.com')
-    ..recipients.add('stolenornot.app@gmail.com')
-    ..subject = 'Bug Report - StolenOrNot?'
-    ..text = reportMessage;
+    final message = Message()
+      ..from = const Address('stolenornot.app@gmail.com')
+      ..recipients.add('stolenornot.app@gmail.com')
+      ..subject = 'Bug Report - StolenOrNot?'
+      ..text = reportMessage;
 
-  try {
-    final sendReport = await send(message, smtpServer);
-    print('Bug report sent: $sendReport');
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Bug Report Sent'),
-        content: const Text('Thank you for reporting the bug!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } catch (error) {
-    print('Error sending bug report: $error');
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Error'),
-        content: const Text('An error occurred while sending the bug report.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Bug report sent: $sendReport');
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Bug Report Sent'),
+          content: const Text('Thank you for reporting the bug!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (error) {
+      print('Error sending bug report: $error');
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Error'),
+          content:
+              const Text('An error occurred while sending the bug report.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
