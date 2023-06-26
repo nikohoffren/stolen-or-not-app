@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
@@ -58,15 +62,19 @@ class AboutScreenState extends State<AboutScreen> {
                 child: ListView(
                   children: [
                     ListTile(
-                      title: const Text('Library 1', style: TextStyle(color: Colors.white)),
-                      subtitle: const Text('Description of Library 1', style: TextStyle(color: Colors.white)),
+                      title: const Text('Library 1',
+                          style: TextStyle(color: Colors.white)),
+                      subtitle: const Text('Description of Library 1',
+                          style: TextStyle(color: Colors.white)),
                       onTap: () {
                         // Handle onTap for Library 1
                       },
                     ),
                     ListTile(
-                      title: const Text('Library 2', style: TextStyle(color: Colors.white)),
-                      subtitle: const Text('Description of Library 2', style: TextStyle(color: Colors.white)),
+                      title: const Text('Library 2',
+                          style: TextStyle(color: Colors.white)),
+                      subtitle: const Text('Description of Library 2',
+                          style: TextStyle(color: Colors.white)),
                       onTap: () {
                         // Handle onTap for Library 2
                       },
@@ -117,6 +125,83 @@ class AboutScreenState extends State<AboutScreen> {
       },
     );
   }
+
+  void _showBugReportModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _messageController = TextEditingController();
+
+        return AlertDialog(
+          title: const Text('Report a Bug'),
+          content: TextField(
+            controller: _messageController,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              labelText: 'Message',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                _sendBugReport(_messageController.text);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+void _sendBugReport(String reportMessage) async {
+  final smtpServer = gmail('stolenornot.app@gmail.com', FlutterConfig.get('STOLEN_OR_NOT_EMAIL_PASSWORD'));
+
+  final message = Message()
+    ..from = const Address('stolenornot.app@gmail.com')
+    ..recipients.add('stolenornot.app@gmail.com')
+    ..subject = 'Bug Report - StolenOrNot?'
+    ..text = reportMessage;
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Bug report sent: $sendReport');
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Bug Report Sent'),
+        content: const Text('Thank you for reporting the bug!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  } catch (error) {
+    print('Error sending bug report: $error');
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Error'),
+        content: const Text('An error occurred while sending the bug report.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -173,6 +258,10 @@ class AboutScreenState extends State<AboutScreen> {
               ElevatedButton(
                 onPressed: _showPrivacyPolicy,
                 child: const Text('Privacy Policy'),
+              ),
+              ElevatedButton(
+                onPressed: _showBugReportModal,
+                child: const Text('Report a Bug'),
               ),
             ],
           ),

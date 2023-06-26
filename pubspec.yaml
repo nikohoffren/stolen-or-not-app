@@ -50,6 +50,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   flutter_config: ^2.0.0
   package_info_plus: ^4.0.2
+  flutter_email_sender: ^6.0.0
 
 dev_dependencies:
   flutter_test:
