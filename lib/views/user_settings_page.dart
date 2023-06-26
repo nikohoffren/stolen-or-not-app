@@ -166,15 +166,15 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                deleteDevice(deviceId);
               },
-              child: const Text('Yes'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                deleteDevice(deviceId);
               },
-              child: const Text('No'),
+              child: const Text('Yes'),
             ),
           ],
         );

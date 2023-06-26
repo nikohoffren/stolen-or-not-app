@@ -18,13 +18,22 @@ class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   String? _errorMessage;
   bool _isLoading = false;
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
+      if (_passwordController.text != _confirmPasswordController.text) {
+        setState(() {
+          _errorMessage = 'Passwords do not match';
+        });
+        return;
+      }
+
       setState(() {
         _isLoading = true;
+        _errorMessage = null;
       });
       try {
         await _auth.createUserWithEmailAndPassword(
@@ -136,6 +145,23 @@ class RegisterPageState extends State<RegisterPage> {
                                   return 'Please enter your password';
                                 } else if (value.length < 6) {
                                   return 'Password should be at least 6 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _confirmPasswordController,
+                              decoration: const InputDecoration(
+                                labelText: 'Confirm Password',
+                                labelStyle: TextStyle(color: AppColors.white),
+                              ),
+                              obscureText: true,
+                              style: const TextStyle(color: AppColors.white),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter your password';
+                                } else if (value != _passwordController.text) {
+                                  return 'Passwords do not match';
                                 }
                                 return null;
                               },
