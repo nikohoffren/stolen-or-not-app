@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.nikohoffren" "\0"
-            VALUE "FileDescription", "stolen_gear_app" "\0"
+            VALUE "FileDescription", "StolenOrNot?" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "stolen_gear_app" "\0"
+            VALUE "InternalName", "StolenOrNot?" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.nikohoffren. All rights reserved." "\0"
             VALUE "OriginalFilename", "stolen_gear_app.exe" "\0"
-            VALUE "ProductName", "stolen_gear_app" "\0"
+            VALUE "ProductName", "StolenOrNot?" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
