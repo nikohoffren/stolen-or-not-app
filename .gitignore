@@ -11,6 +11,8 @@
 .env
 migrate_working_dir/
 **/google-services.json
+key.properties
+app/upload-keystore.jks
 
 # IntelliJ related
 *.iml

@@ -34,7 +34,7 @@ class SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.black,
       body: Center(
         child: Image.asset(
-          'assets/images/stolen-gear-logo.jpeg',
+          'assets/images/app_icon.png',
           fit: BoxFit.cover,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
