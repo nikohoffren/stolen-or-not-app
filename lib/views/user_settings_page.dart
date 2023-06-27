@@ -477,7 +477,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _signOut,
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: Colors.red,
         child: const Icon(Icons.logout),
       ),
     );

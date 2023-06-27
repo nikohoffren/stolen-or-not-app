@@ -8,6 +8,7 @@ import 'package:mailer/smtp_server/gmail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
+import 'package:stolen_gear_app/widgets/acknowledgments.dart';
 import 'package:stolen_gear_app/widgets/privacy_policy.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -44,49 +45,7 @@ class AboutScreenState extends State<AboutScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          color: AppColors.primaryColor,
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Acknowledgments',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  children: [
-                    ListTile(
-                      title: const Text('Library 1',
-                          style: TextStyle(color: Colors.white)),
-                      subtitle: const Text('Description of Library 1',
-                          style: TextStyle(color: Colors.white)),
-                      onTap: () {
-                        // Handle onTap for Library 1
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Library 2',
-                          style: TextStyle(color: Colors.white)),
-                      subtitle: const Text('Description of Library 2',
-                          style: TextStyle(color: Colors.white)),
-                      onTap: () {
-                        // Handle onTap for Library 2
-                      },
-                    ),
-                    // Add more ListTile widgets for each acknowledgment
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return const Acknowledgments();
       },
     );
   }
