@@ -23,11 +23,9 @@ class SplashScreenState extends State<SplashScreen> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    // Set the status bar color to transparent
+    //* Set the status bar color to transparent
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     );
