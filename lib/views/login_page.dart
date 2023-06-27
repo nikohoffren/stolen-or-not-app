@@ -113,131 +113,133 @@ class LoginPageState extends State<LoginPage> {
                 size: 150,
               ),
             )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ClipOval(
-                    child: Image.asset(
-                      'assets/images/stolen-gear-logo.jpeg',
-                      fit: BoxFit.cover,
-                      height: 120,
-                      width: 120,
+          : SingleChildScrollView(
+            child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ClipOval(
+                      child: Image.asset(
+                        'assets/images/stolen-gear-logo.jpeg',
+                        fit: BoxFit.cover,
+                        height: 120,
+                        width: 120,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "StolenOrNot?",
-                    style: GoogleFonts.abel(
-                      color: AppColors.secondaryColor,
-                      fontSize: 42,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  if (_errorMessage != null)
+                    const SizedBox(height: 10),
                     Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
+                      "StolenOrNot?",
+                      style: GoogleFonts.abel(
+                        color: AppColors.secondaryColor,
+                        fontSize: 42,
+                      ),
                     ),
-                  Form(
-                    key: _formKey,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        inputDecorationTheme: const InputDecorationTheme(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: AppColors.secondaryColor),
+                    const SizedBox(height: 20),
+                    if (_errorMessage != null)
+                      Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    Form(
+                      key: _formKey,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          inputDecorationTheme: const InputDecorationTheme(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.secondaryColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.secondaryColor),
+                            ),
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: AppColors.secondaryColor),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(color: AppColors.white),
+                                ),
+                                style: const TextStyle(color: AppColors.white),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _passwordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(color: AppColors.white),
+                                ),
+                                obscureText: true,
+                                style: const TextStyle(color: AppColors.white),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed:
+                                    _isLoading ? null : _signInWithEmailPassword,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.secondaryColor,
+                                  foregroundColor: AppColors.white,
+                                ),
+                                child: const Text('Sign In with Email'),
+                              ),
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: _isLoading
+                                    ? null
+                                    : () async {
+                                        final UserCredential user =
+                                            await _signInWithGoogle();
+                                        if (user.user != null) {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const MainScreen(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                child: Image.asset(
+                                  'assets/images/google_button.png',
+                                  height: 50.0,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: _isLoading ? null : _register,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.secondaryColor,
+                                  foregroundColor: AppColors.white,
+                                ),
+                                child: const Text('Register with Email'),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
                           ),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                labelStyle: TextStyle(color: AppColors.white),
-                              ),
-                              style: const TextStyle(color: AppColors.white),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your email';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              controller: _passwordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                labelStyle: TextStyle(color: AppColors.white),
-                              ),
-                              obscureText: true,
-                              style: const TextStyle(color: AppColors.white),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your password';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed:
-                                  _isLoading ? null : _signInWithEmailPassword,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.secondaryColor,
-                                foregroundColor: AppColors.white,
-                              ),
-                              child: const Text('Sign In with Email'),
-                            ),
-                            const SizedBox(height: 10),
-                            InkWell(
-                              onTap: _isLoading
-                                  ? null
-                                  : () async {
-                                      final UserCredential user =
-                                          await _signInWithGoogle();
-                                      if (user.user != null) {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainScreen(),
-                                          ),
-                                        );
-                                      }
-                                    },
-                              child: Image.asset(
-                                'assets/images/google_button.png',
-                                height: 50.0,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _isLoading ? null : _register,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.secondaryColor,
-                                foregroundColor: AppColors.white,
-                              ),
-                              child: const Text('Register with Email'),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+          ),
     );
   }
 }
@@ -245,6 +247,6 @@ class LoginPageState extends State<LoginPage> {
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Stream to listen for changes in the user's authentication state
+  //* Stream to listen for changes in the user's authentication state
   Stream<bool> get isLoggedIn => _auth.authStateChanges().map((User? user) => user != null);
 }

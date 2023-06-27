@@ -85,102 +85,104 @@ class RegisterPageState extends State<RegisterPage> {
               size: 150,
             ))
           : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    'Register with Email',
-                    style: TextStyle(color: AppColors.white, fontSize: 24),
-                  ),
-                  const SizedBox(height: 20),
-                  if (_errorMessage != null)
-                    Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Text(
+                      'Register with Email',
+                      style: TextStyle(color: AppColors.white, fontSize: 24),
                     ),
-                  Form(
-                    key: _formKey,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        inputDecorationTheme: const InputDecorationTheme(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: AppColors.secondaryColor),
+                    const SizedBox(height: 20),
+                    if (_errorMessage != null)
+                      Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    Form(
+                      key: _formKey,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          inputDecorationTheme: const InputDecorationTheme(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.secondaryColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.secondaryColor),
+                            ),
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: AppColors.secondaryColor),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(color: AppColors.white),
+                                ),
+                                style: const TextStyle(color: AppColors.white),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _passwordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(color: AppColors.white),
+                                ),
+                                obscureText: true,
+                                style: const TextStyle(color: AppColors.white),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  } else if (value.length < 6) {
+                                    return 'Password should be at least 6 characters';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
+                                controller: _confirmPasswordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Confirm Password',
+                                  labelStyle: TextStyle(color: AppColors.white),
+                                ),
+                                obscureText: true,
+                                style: const TextStyle(color: AppColors.white),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  } else if (value != _passwordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: _register,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.secondaryColor,
+                                  foregroundColor: AppColors.white,
+                                ),
+                                child: const Text('Register'),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                labelStyle: TextStyle(color: AppColors.white),
-                              ),
-                              style: const TextStyle(color: AppColors.white),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your email';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              controller: _passwordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                labelStyle: TextStyle(color: AppColors.white),
-                              ),
-                              obscureText: true,
-                              style: const TextStyle(color: AppColors.white),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your password';
-                                } else if (value.length < 6) {
-                                  return 'Password should be at least 6 characters';
-                                }
-                                return null;
-                              },
-                            ),
-                            TextFormField(
-                              controller: _confirmPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Confirm Password',
-                                labelStyle: TextStyle(color: AppColors.white),
-                              ),
-                              obscureText: true,
-                              style: const TextStyle(color: AppColors.white),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your password';
-                                } else if (value != _passwordController.text) {
-                                  return 'Passwords do not match';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _register,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.secondaryColor,
-                                foregroundColor: AppColors.white,
-                              ),
-                              child: const Text('Register'),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );

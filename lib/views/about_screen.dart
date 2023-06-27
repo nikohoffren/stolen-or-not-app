@@ -164,63 +164,65 @@ class AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                child: Image.asset(
-                  'assets/images/stolen-gear-logo.jpeg',
-                  fit: BoxFit.cover,
-                  height: 200,
-                  width: 200,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ClipOval(
+                  child: Image.asset(
+                    'assets/images/stolen-gear-logo.jpeg',
+                    fit: BoxFit.cover,
+                    height: 200,
+                    width: 200,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "StolenOrNot?",
-                style: GoogleFonts.abel(
-                  color: AppColors.secondaryColor,
-                  fontSize: 32,
+                const SizedBox(height: 10),
+                Text(
+                  "StolenOrNot?",
+                  style: GoogleFonts.abel(
+                    color: AppColors.secondaryColor,
+                    fontSize: 32,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              Text(
-                'Version: $_version',
-                style: const TextStyle(
-                  color: AppColors.white,
+                const SizedBox(height: 30),
+                Text(
+                  'Version: $_version',
+                  style: const TextStyle(
+                    color: AppColors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Developed by: Niko Hoffrén',
-                style: TextStyle(
-                  color: AppColors.white,
+                const SizedBox(height: 10),
+                const Text(
+                  'Developed by: Niko Hoffrén',
+                  style: TextStyle(
+                    color: AppColors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Contact: stolenornot.app@gmail.com',
-                style: TextStyle(
-                  color: AppColors.white,
+                const SizedBox(height: 10),
+                const Text(
+                  'Contact: stolenornot.app@gmail.com',
+                  style: TextStyle(
+                    color: AppColors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showAcknowledgments,
-                child: const Text('Acknowledgments'),
-              ),
-              ElevatedButton(
-                onPressed: _showPrivacyPolicy,
-                child: const Text('Privacy Policy'),
-              ),
-              ElevatedButton(
-                onPressed: _showBugReportModal,
-                child: const Text('Report a Bug'),
-              ),
-            ],
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _showAcknowledgments,
+                  child: const Text('Acknowledgments'),
+                ),
+                ElevatedButton(
+                  onPressed: _showPrivacyPolicy,
+                  child: const Text('Privacy Policy'),
+                ),
+                ElevatedButton(
+                  onPressed: _showBugReportModal,
+                  child: const Text('Report a Bug'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
