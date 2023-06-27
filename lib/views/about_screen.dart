@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stolen_gear_app/themes/app_colors.dart';
 import 'package:stolen_gear_app/views/user_settings_page.dart';
 import 'package:stolen_gear_app/widgets/acknowledgments.dart';
+import 'package:stolen_gear_app/widgets/info.dart';
 import 'package:stolen_gear_app/widgets/privacy_policy.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -73,6 +74,39 @@ class AboutScreenState extends State<AboutScreen> {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: PrivacyPolicy(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void _showInfo() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            color: AppColors.primaryColor,
+            child: Column(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Info about this App',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Info(),
                 ),
               ],
             ),
@@ -212,6 +246,10 @@ class AboutScreenState extends State<AboutScreen> {
                 ElevatedButton(
                   onPressed: _showAcknowledgments,
                   child: const Text('Acknowledgments'),
+                ),
+                ElevatedButton(
+                  onPressed: _showInfo,
+                  child: const Text('Info about this App'),
                 ),
                 ElevatedButton(
                   onPressed: _showPrivacyPolicy,
