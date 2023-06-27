@@ -120,7 +120,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
         setState(() {
           _deviceStatus = device['isStolen']
               ? 'This device is reported stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}'
-              : 'This device is not reported stolen.';
+              : 'This device is not reported.';
           if (additionalInfoText.isNotEmpty) {
             _additionalInfoCard = Padding(
               padding: const EdgeInsets.all(1.0),
@@ -324,6 +324,7 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                         padding: const EdgeInsets.all(20.0),
                         child: Image.network(_imageUrl!),
                       ),
+                    //* if stolen, show message field
                     if (_deviceStatus.contains('stolen'))
                       Column(
                         children: [
@@ -362,20 +363,21 @@ class CheckDeviceScreenState extends State<CheckDeviceScreen> {
                     const SizedBox(height: 20),
                     _buildFAQQuestion(
                       'What should I do if I see that the device is stolen?',
-                      'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any information you have about the device and the seller.',
+                      'If you suspect that a device is stolen, do not purchase or engage in any transaction involving the device. Contact your local law enforcement agency to report the stolen device and provide them with any information you have about the device and the seller.\n\n'
+                          'Also you have possibility to send message to the user who reported the device as stolen. You can inform them with same information as law enforcement like where did you see the device being on sale and you can also include your own email address to the message if you like to keep contact with the actual owner of the device.',
                     ),
                     _buildFAQQuestion(
                       'How can I protect my device from being stolen?',
                       'To protect your device from being stolen, follow these tips:\n\n1. Enable a passcode or biometric authentication on your device.\n2. Keep your device out of sight and secure it when not in use.\n3. Enable remote tracking and remote wipe capabilities on your device.\n4. Register your device with a device registry service like StolenOrNot to increase the chances of recovery if it gets stolen.\n5. Be cautious when purchasing used devices and ensure they are not reported stolen before making a purchase.',
                     ),
                     _buildFAQQuestion(
-                    'What is IMEI and where to find it?',
-                    'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
-                  ),
-                  _buildFAQQuestion(
-                    'What is Serial number?',
-                    'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
-                  ),
+                      'What is IMEI and where to find it?',
+                      'IMEI stands for International Mobile Equipment Identity. It is a unique identification or serial number that all mobile phones and smartphones have. You can usually find the IMEI number on the back of your phone or by dialing *#06# on your phone\'s dial pad.',
+                    ),
+                    _buildFAQQuestion(
+                      'What is Serial number?',
+                      'The serial number is a unique identifier assigned to a device by the manufacturer. It is usually located on the back of the device or in the device settings. For phones and tablets, the IMEI number can be used as the serial number. For other devices, check the user manual or the manufacturer\'s website for more information.',
+                    ),
                   ],
                 ),
               ),
