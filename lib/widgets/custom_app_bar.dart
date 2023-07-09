@@ -33,12 +33,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: 32,
             ),
           ),
-          Text(
-            "  StolenOrNot?",
-            style: GoogleFonts.abel(
-                color: AppColors.secondaryColor, fontSize: 25.0),
+          // Text(
+          //   "  StolenOrNot?",
+          //   style: GoogleFonts.abel(
+          //     color: AppColors.secondaryColor,
+          //     fontSize: 25.0,
+          //   ),
+          // ),
+          const Spacer(),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(title),
+            ),
           ),
-          Container(padding: const EdgeInsets.all(8.0), child: Text(title)),
         ],
       ),
       actions: [
