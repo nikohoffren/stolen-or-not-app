@@ -1,7 +1,8 @@
 # StolenOrNot? (Flutter app)
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![GitHub version](https://badge.fury.io/gh/username%2Frepo.svg)
+![GitHub version](https://badge.fury.io/gh/nikohoffren%2Fstolen-or-not-app.svg)
+
 
 <img src="https://github.com/nikohoffren/stolen-or-not-app/blob/main/assets/images/stolen-gear-logo.jpeg?raw=true" alt="StolenOrNot?" width="300">
 
