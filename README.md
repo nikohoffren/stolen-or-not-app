@@ -1,5 +1,7 @@
 # StolenOrNot? (Flutter app)
 
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 <img src="https://github.com/nikohoffren/stolen-or-not-app/blob/main/assets/images/stolen-gear-logo.jpeg?raw=true" alt="StolenOrNot?" width="300">
 
 ## Description
@@ -30,8 +32,6 @@ Please note that this application is a work in progress and more features are ex
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 ## License
 
