@@ -22,10 +22,7 @@ To get started with the app, clone the repository and then follow these steps:
 
 1. Make sure you have Flutter and Dart installed and set up. If not, follow the guide [here](https://flutter.dev/docs/get-started/install).
 2. Run `flutter pub get` in the root of the project to install necessary dependencies.
-3. Set up Firebase:
-   - Visit the [Firebase Console](https://console.firebase.google.com/), create a new project and follow the setup guides for both Android and iOS.
-   - Don't forget to replace the `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) with your own files.
-4. Build and run the project:
+5. Build and run the project:
    - For Android, you can use `flutter run` command or use your IDE run configuration.
    - For iOS, use `flutter run` or `CMD+R` in Xcode.
 
