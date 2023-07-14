@@ -43,6 +43,5 @@ Unsure where to begin contributing to this project? You can start by looking thr
 
 ## Styleguides
 
-* Use the prettier format.
 * Use `snake_case` for file names.
 * Commit messages should clearly communicate the purpose of the change.
