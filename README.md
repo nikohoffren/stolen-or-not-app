@@ -8,6 +8,22 @@
 
 [Download in Google Play Store](https://play.google.com/store/apps/details?id=com.nikohoffren.stolen_gear_app)
 
+## Table of Contents
+
+-   [Technologies Used](#technologies-used)
+-   [Description](#description)
+-   [Key Features](#key-features)
+-   [Getting Started](#getting-started)
+-   [Contributing](#contributing)
+-   [Questions](#questions)
+-   [License](#license)
+
+## Technologies Used
+
+- [Flutter](https://flutter.dev/)
+- [Firebase ](https://firebase.google.com/)
+- [Google Sign-In](https://developers.google.com/identity/)
+
 ## Description
 
 This Flutter application is built to help people keep track of their valuable devices and protect them from theft. It allows users to register their devices, such as computers, cars, musical instruments, and more by entering a name and a unique serial number for each device. If a device gets stolen, users can mark it as such in the app. That way, if someone is selling the device in question, people will be able to check whether the device is already registered to someone in the app.
@@ -33,6 +49,10 @@ Please note that this application is a work in progress and more features are ex
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Questions
+
+If you have any questions about the repo, open an issue or contact me directly at niko.hoffren@gmail.com.
 
 ## License
 
