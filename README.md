@@ -37,9 +37,9 @@ This Flutter application is built to help people keep track of their valuable de
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 1. Fork the repository
-2. Clone the repository to your local machine `git clone https://github.com/<your-username>/stolen-or-not-app.git`
+2. Clone the repository to your local machine `git clone https://github.com/your-username/stolen-or-not-app.git`
 
-Replace <your-username> with your GitHub username.
+Replace 'your-username' with your GitHub username.
 
 3. Change directory to the project directory `cd stolen-or-not-app`
 4. Run `flutter pub get` in the root of the project to install necessary dependencies.
