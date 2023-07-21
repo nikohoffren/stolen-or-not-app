@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_config/flutter_config.dart';
-
 import 'package:stolen_gear_app/views/login_page.dart';
 import 'package:stolen_gear_app/views/main_screen.dart';
 import 'package:stolen_gear_app/views/splash_screen.dart';
@@ -24,11 +23,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: const SplashScreen(), // Use SplashScreen as the initial route
+      home: const SplashScreen(),
     );
   }
 }
-
 
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
@@ -41,13 +39,13 @@ class AuthenticationWrapper extends StatelessWidget {
       stream: authService.isLoggedIn,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Show the SplashScreen while checking the authentication status
+          //* Show the SplashScreen while checking the authentication status
           return const SplashScreen();
         } else if (snapshot.hasData && snapshot.data!) {
-          // User is logged in, navigate to MainScreen
+          //* User is logged in, navigate to MainScreen
           return const MainScreen();
         } else {
-          // User is not logged in, navigate to LoginPage
+          //* User is not logged in, navigate to LoginPage
           return const LoginPage();
         }
       },
