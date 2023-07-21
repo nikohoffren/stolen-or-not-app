@@ -1,11 +1,15 @@
+<div align="center">
 # StolenOrNot? (Flutter app)
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![GitHub version](https://badge.fury.io/gh/nikohoffren%2Fstolen-or-not-app.svg)
+[![Version 1.1.3](https://img.shields.io/badge/Version-1.0.3-brightgreen.svg)](https://github.com/nikohoffren/stolen-or-not/pulls)
+[![PR:s Welcome](https://img.shields.io/badge/PR:s-Welcome-brightgreen.svg)](https://github.com/nikohoffren/stolen-or-not/pulls)
 
 <img src="https://github.com/nikohoffren/stolen-or-not-app/blob/main/assets/images/stolen-gear-logo.jpeg?raw=true" alt="StolenOrNot?" width="300">
 
 [Download in Google Play Store](https://play.google.com/store/apps/details?id=com.nikohoffren.stolen_gear_app)
+
+</div>
 
 ## Table of Contents
 
