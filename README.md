@@ -1,5 +1,5 @@
 <div align="center">
-# StolenOrNot? (Flutter app)
+# Stolen Or Not? (Flutter App)
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version 1.1.3](https://img.shields.io/badge/Version-1.0.3-brightgreen.svg)](https://github.com/nikohoffren/stolen-or-not/pulls)
@@ -67,7 +67,7 @@ Also, please read our [Contributing Guidelines](CONTRIBUTING.md) for more inform
 
 ## Questions
 
-If you have any questions about the repo, open an issue or contact me directly at niko.hoffren@gmail.com.
+If you have any questions about the repo, open an issue or contact me directly at niko.hoffren@gmail.com or at stolenornot.app@gmail.com.
 
 ## License
 
