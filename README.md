@@ -14,17 +14,17 @@
 
 ## Table of Contents
 
--   [Technologies Used](#technologies-used)
--   [Description](#description)
--   [Key Features](#key-features)
--   [Contributing](#contributing)
--   [Questions](#questions)
--   [License](#license)
+- [Technologies Used](#technologies-used)
+- [Description](#description)
+- [Key Features](#key-features)
+- [Contributing](#contributing)
+- [Questions](#questions)
+- [License](#license)
 
 ## Technologies Used
 
 - [Flutter](https://flutter.dev/)
-- [Firebase ](https://firebase.google.com/)
+- [Firebase](https://firebase.google.com/)
 - [Google Sign-In](https://developers.google.com/identity/)
 
 ## Description
@@ -51,7 +51,7 @@ Replace 'your-username' with your GitHub username.
 5. Build and run the project:
    - For Android, you can use `flutter run` command or use your IDE run configuration.
 6. When the app is running on your emulator, you can use testing credentials to log in with email and password:
-   - Email: stolen-or-not-test@gmail.com
+   - Email: <stolen-or-not-test@gmail.com>
    - Password: 123456
 7. Create your Feature Branch `git switch -c feature` (Replace the feature placeholder with your new feature)
 8. Make your changes in code
@@ -68,7 +68,7 @@ Also, please read our [Contributing Guidelines](CONTRIBUTING.md) for more inform
 
 ## Questions
 
-If you have any questions about the repo, open an issue or contact me directly at niko.hoffren@gmail.com or at stolenornot.app@gmail.com.
+If you have any questions about the repo, open an issue or contact me directly at <niko.hoffren@gmail.com> or at <stolenornot.app@gmail.com>.
 
 ## License
 
