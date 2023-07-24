@@ -400,26 +400,36 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                                           Icons.devices,
                                           color: AppColors.secondaryColor,
                                         ),
-                                  title: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: device['name'],
-                                          style: const TextStyle(
-                                            color: AppColors.white,
-                                          ),
-                                        ),
-                                        if (device['isStolen'])
-                                          TextSpan(
-                                            text:
-                                                '  -  You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
-                                            style: const TextStyle(
-                                              color: AppColors.red,
-                                              fontSize: 12,
+                                  title: Column(
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: device['name'],
+                                              style: const TextStyle(
+                                                color: AppColors.white,
+                                              ),
                                             ),
-                                          ),
-                                      ],
-                                    ),
+                                          ],
+                                        ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            if (device['isStolen'])
+                                              TextSpan(
+                                                text:
+                                                    '  -  You have reported this device stolen at ${device['reportedAt'] != null ? DateFormat('d MMMM yyyy, HH:mm').format(device['reportedAt'].toDate()) : 'unknown time'}',
+                                                style: const TextStyle(
+                                                  color: AppColors.red,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   subtitle: Text(
                                     device['serialNumber'],
