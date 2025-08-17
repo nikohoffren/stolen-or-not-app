@@ -8,8 +8,6 @@
 
 <img src="https://github.com/nikohoffren/stolen-or-not-app/blob/main/assets/images/stolen-gear-logo.jpeg?raw=true" alt="StolenOrNot?" width="300">
 
-[Download in Google Play Store](https://play.google.com/store/apps/details?id=com.nikohoffren.stolen_gear_app)
-
 </div>
 
 ## Table of Contents
